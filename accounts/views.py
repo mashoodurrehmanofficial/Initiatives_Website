@@ -98,7 +98,7 @@ def send_reset_url(request):
             code = str(str(uuid.uuid4())+str(uuid.uuid4())).replace('-','')
             target_profile.reset_code = code
             target_profile.save() 
-            SEND_MESSAGE(email,f"http://localhost:8000/account/reset_password/{code}")
+            SEND_MESSAGE(email,f"https://mashood.pythonanywhere.com/account/reset_password/{code}")
             return redirect("message_page")
         else:
             return render(request, 'accounts/send_reset_url.html',{"error":"Given Email doesn't exists in database !"})
