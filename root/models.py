@@ -16,6 +16,8 @@ class Profile(models.Model):
     password = models.CharField(max_length=10000,blank=True,default='')
     country = models.CharField(max_length=10000,blank=True,default='')
     state = models.CharField(max_length=10000,blank=True,default='')
+    reset_code = models.CharField(max_length=10000,blank=True,default='')
+    
 
 
 

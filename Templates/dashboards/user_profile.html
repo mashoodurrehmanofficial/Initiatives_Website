@@ -7,37 +7,138 @@
 
 <div class="container">
   <center>
-    {% if message  %}
-      <h4 class="green-text">{{message}}</h4>
+    {% if message %}
+    <h4 class="green-text">{{message}}</h4>
     {% endif %}
-  
-     {% if error  %}
-      <h4 class="red-text">{{error}}</h4>
+
+    {% if error %}
+    <h4 class="red-text">{{error}}</h4>
     {% endif %}
-  
-    
+
+
   </center>
-  
-<div class="container">
-  {{password}}
 
 
+  <div class="container">
+    <form action="/dashboard/user_profile/" id="profile_form" method="post" id="signup_form" class='z-depth-2'
+      style="padding: 20px;border-radius: 10px;"> {% csrf_token %}
+      <center>
+        <h3><b>My Profile</b></h3>
+      </center>
+
+
+      <div class="input-field ">
+        <input id="username" name="username" type="text" class="validate" value="{{profile.orignal_name}}" required>
+        <label for="username">Username</label>
+      </div>
+
+      <div class="input-field ">
+        <input id="email" name="email" type="email" class="validate" value="{{profile.email}}" required>
+        <label for="email">Email</label>
+      </div>
+
+
+
+      <div class="input-field ">
+        <input id="password" type="text" name="password" class="validate" value="{{profile.password}}" required>
+        <label for="password">Password</label>
+      </div>
+
+
+      <div class="row">
+        <div class="col s12 m6 l6" style="margin: 0%;padding:0%">
+          <label>Select Country</label>
+          <select name="country" class="browser-default" id="select_country">
+            {% for country in countries %}
+            {% if country == profile.country %}
+            <option value="{{country}}" selected> {{country}}</option>
+
+            {% else %}
+            <option value="{{country}}">{{country}}</option>
+
+            {% endif %}
+
+            {% endfor %}
+          </select>
+
+        </div>
+
+
+
+
+
+        <div class="statediv col s12 m6 l6" >
+          <label>Select City</label>
+          <select name="state" class="browser-default" id="select_state">
+            {% for state in cities %}
+            {% if state == profile.state %}
+            <option value="{{state}}" selected> {{state}}</option>
+
+            {% else %}
+            <option value="{{state}}">{{state}}</option>
+
+            {% endif %}
+
+            {% endfor %}
+          </select>
+          <br>
+        </div>
+      </div>
+      <br>
+
+
+
+
+
+      <button class="btn right" style="width: 30%;">Update Profile</button>
+      <br>
+      <br>
+
+
+    </form>
+  </div>
 </div>
-</div>
+
 
 
 
 
 
 <script>
+$("#profile_form").submit(function(e){
+  var state =  $('#select_state').val()
+  var country =  $('#select_country').val()
+  if(state==null||country==null){
+    e.preventDefault()
+    alert("Select valid Country and City")
+  }
+})
 
-  
-   
-  </script>
-  
+
+  $('#select_country').change(function (e) {
+    var country = $('#select_country').val()
+    $.ajax({
+      url: "/account/fetch_cities/",
+      data: { "country": country },
+      method: 'GET',
+      success: function (data) {
+        var states = data.cities.toString().split(',')
+        $('div.statediv').show();
+        $('div.select_state').show();
+        $('select#select_state').html('')
+        $('select#select_state').append(`<option value="" disabled selected>Select State</option> `)
+        for (var x = 0; x < states.length; x++) {
+          $('select#select_state').append(`
+          <option value="${states[x]}">${states[x]}</option> 
+          `)
+        }
+      }
+    });
+  })
+
+</script>
 
 
- 
 
 
 {% endblock 'mainbody' %}

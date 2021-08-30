@@ -45,24 +45,28 @@
       </div>
 
 
+      <div class="row">
+       <div class="col s12 m6 l6" style="margin: 0%;padding:0%">
+        <label>Select Country</label>
+        <select name="country" class="browser-default" id="select_country">
+          <option value="" disabled selected>Choose your country</option>
+          {% for country in countries %}
+          <option value="{{country}}">{{country}}</option>
+          {% endfor %}
+        </select> 
+       </div>
+  
 
-      <label>Select Country</label>
-      <select name="country" class="browser-default" id="select_country">
-        <option value="" disabled selected>Choose your country</option>
-        {% for country in countries %}
-        <option value="{{country}}">{{country}}</option>
-        {% endfor %}
-      </select>
-      <br>
-
-
-
-      <div class="statediv" style="display: none;">
-        <label>Select State</label>
-        <select name="state" class="browser-default" id="select_state">
-        </select>
-        <br>
+        <div class="statediv col s12 m6 l6" style="display: none;">
+          <label>Select City</label>
+          <select name="state" class="browser-default" id="select_state">
+          </select>
+          <br>
+        </div>
+  
+        
       </div>
+
 
       <br>
 
@@ -88,18 +92,30 @@
 
 
 <script>
+  $("#profile_form").submit(function(e){
+    var state =  $('#select_state').val()
+    var country =  $('#select_country').val()
+    if(state==null||country==null){
+      e.preventDefault()
+      alert("Select valid Country and City")
+    }
+  })
+  
+
+
+
   $('#select_country').change(function (e) {
     var country = $('#select_country').val()
     $.ajax({
-      url: "/account/fetch_states/",
+      url: "/account/fetch_cities/",
       data: { "country": country },
       method: 'GET',
       success: function (data) {
-        var states = data.states.toString().split(',')
+        var states = data.cities.toString().split(',')
         $('div.statediv').show();
         $('div.select_state').show();
         $('select#select_state').html('')
-        $('select#select_state').append(`<option value="" disabled selected>Select State</option> `)
+        $('select#select_state').append(`<option value="" disabled selected>Select City</option> `)
         for (var x = 0; x < states.length; x++) {
           $('select#select_state').append(`
           <option value="${states[x]}">${states[x]}</option> 

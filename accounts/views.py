@@ -13,6 +13,7 @@ from django.contrib.auth import authenticate, login,logout
 import uuid
 from root.models import *
 from .geodata import  geodata
+from .EMAIL_SENDER import SEND_MESSAGE
 
 # Create your views here.
 
@@ -61,7 +62,7 @@ def login_page(request):
             user = user.first()
             user_profile = Profile.objects.filter(user=user).first()
         
-            user = authenticate(username=user_profile.generated_name,password=user_profile.password)
+            user = authenticate(username=user_profile.generated_name,password=password)
             if user is not None:
                 login(request, user)
                 print("login successful !") 
@@ -79,12 +80,49 @@ def logout_page(request):
 
 
 
-def fetch_states(request):
+def fetch_cities(request):
     country = request.GET['country']
-    states = [x['states'] for x in geodata if x['country'] == country]
-    return JsonResponse({'states':states})
+    cities = [x['cities'] for x in geodata if x['country'] == country]
+    return JsonResponse({'cities':cities})
 
 
 
+def message_page(request):
+    return render(request,'accounts/message_page.html')
+
+def send_reset_url(request): 
+    if request.method == 'POST':
+        email = request.POST['email']
+        if User.objects.filter(email=email).exists():
+            target_profile = Profile.objects.filter(email=email).first()
+            code = str(str(uuid.uuid4())+str(uuid.uuid4())).replace('-','')
+            target_profile.reset_code = code
+            target_profile.save() 
+            SEND_MESSAGE(email,f"http://localhost:8000/account/reset_password/{code}")
+            return redirect("message_page")
+        else:
+            return render(request, 'accounts/send_reset_url.html',{"error":"Given Email doesn't exists in database !"})
+    return render(request,'accounts/send_reset_url.html')
+
+ 
+
+
+def reset_password(request,reset_code):
+    target_profile = Profile.objects.filter(reset_code=reset_code).first()
+    if target_profile:
+            if request.method == 'POST':
+                new_password = request.POST['password']
+                target_user = User.objects.filter(email=target_profile.email).first()
+                target_user.set_password(new_password)
+                target_user.save()
+                target_profile.password = new_password
+                target_profile.reset_code = ''
+                target_profile.save()
+                print(target_user)
+                return redirect('login_page')
+            else:
+                return render(request,'accounts/reset_password.html')
+    else:
+        return HttpResponse("<h1>Wrong Reset Link</h1>")
 
 
