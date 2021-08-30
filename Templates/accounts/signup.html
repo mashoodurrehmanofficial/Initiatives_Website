@@ -1,0 +1,119 @@
+{% extends 'base.html' %}v
+{% block 'mainbody' %}
+
+
+
+<br>
+
+<div class="container">
+  <center>
+    {% if message %}
+    <h4 class="green-text">{{message}}</h4>
+    {% endif %}
+
+    {% if error %}
+    <h4 class="red-text">{{error}}</h4>
+    {% endif %}
+
+
+  </center>
+
+
+  <div class="container">
+    <form action="/account/signup/" method="post" id="signup_form" class='z-depth-2'
+      style="padding: 20px;border-radius: 10px;"> {% csrf_token %}
+      <center>
+        <h3><b>Signup Form</b></h3>
+      </center>
+
+
+      <div class="input-field ">
+        <input id="username" name="username" type="text" class="validate" required>
+        <label for="username">Username</label>
+      </div>
+
+      <div class="input-field ">
+        <input id="email" name="email" type="email" class="validate" required>
+        <label for="email">Email</label>
+      </div>
+
+
+
+      <div class="input-field ">
+        <input id="password" type="text" name="password" class="validate" required>
+        <label for="password">Password</label>
+      </div>
+
+
+
+      <label>Select Country</label>
+      <select name="country" class="browser-default" id="select_country">
+        <option value="" disabled selected>Choose your country</option>
+        {% for country in countries %}
+        <option value="{{country}}">{{country}}</option>
+        {% endfor %}
+      </select>
+      <br>
+
+
+
+      <div class="statediv" style="display: none;">
+        <label>Select State</label>
+        <select name="state" class="browser-default" id="select_state">
+        </select>
+        <br>
+      </div>
+
+      <br>
+
+
+
+
+
+      <a href="/account/login/"> <u>Already have an account</u> </a>
+
+      <button class="btn right" style="width: 30%;">Sign Up</button>
+      <br>
+      <br>
+
+      <!-- <input type="country" name="" id=""> -->
+
+    </form>
+  </div>
+</div>
+
+
+
+
+
+
+<script>
+  $('#select_country').change(function (e) {
+    var country = $('#select_country').val()
+    $.ajax({
+      url: "/account/fetch_states/",
+      data: { "country": country },
+      method: 'GET',
+      success: function (data) {
+        var states = data.states.toString().split(',')
+        $('div.statediv').show();
+        $('div.select_state').show();
+        $('select#select_state').html('')
+        $('select#select_state').append(`<option value="" disabled selected>Select State</option> `)
+        for (var x = 0; x < states.length; x++) {
+          $('select#select_state').append(`
+          <option value="${states[x]}">${states[x]}</option> 
+          `)
+        }
+      }
+    });
+  })
+
+</script>
+
+
+
+
+{% endblock 'mainbody' %}
+{% block 'js' %}
+{% endblock 'js' %}

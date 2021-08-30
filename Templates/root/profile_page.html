@@ -1,0 +1,86 @@
+{% extends 'base.html' %}v
+{% block 'mainbody' %}
+
+
+
+<br>
+
+<div class="container">
+  <center>
+    {% if message  %}
+      <h4 class="green-text">{{message}}</h4>
+    {% endif %}
+  
+     {% if error  %}
+      <h4 class="red-text">{{error}}</h4>
+    {% endif %}
+  
+    
+  </center>
+  
+<div class="container">
+    <form action="/profile_page" method="post" id="profile_form" class='z-depth-2'  style="padding: 20px;border-radius: 10px;"> {% csrf_token %}
+        <center><h3><b>Profile</b></h3></center>
+  
+        
+                
+     <div class="input-field ">
+      <input id="username" name="username" type="text" class="validate" value="{{request.user.username}}">
+      <label for="username">Username</label>
+    </div>
+                    
+     <div class="input-field ">
+      <input id="firstname" name="firstname" type="text" class="validate" value="{{request.user.first_name}}">
+      <label for="firstname">First Name</label>
+    </div>
+    
+    
+    <div class="input-field ">
+      <input id="lastname" name="lastname" type="text" class="validate" value="{{request.user.last_name}}">
+      <label for="lastname">Last Name</label>
+    </div>
+    
+
+
+
+     
+          <div class="input-field ">
+            <input id="password" type="text" name="password" class="validate" value="{{password}}">
+            <label for="password">Password</label>
+          </div>
+        
+    
+        <button class="btn nextbtn right" >Save Changes</button>
+
+<br><br>
+
+    </form>
+</div>
+</div>
+
+
+
+
+
+<script>
+  $('#profile_form').submit(function(e){
+    var password = $('#password').val()
+    var strongRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})");
+    if(strongRegex.test(password)) { 
+    }else{
+      e.preventDefault()
+      alert("Password must contain Upper Lower case characters, Special symbols and minimum lenght should be 8 !")
+    
+    }
+  })
+   
+  </script>
+  
+
+
+ 
+
+
+{% endblock 'mainbody' %}
+{% block 'js' %}
+{% endblock 'js' %}

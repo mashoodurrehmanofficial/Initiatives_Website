@@ -1,0 +1,120 @@
+{% block 'mainbody' %}
+<div class="navbar-fixed" style="position: relative;"> 
+
+ 
+
+
+  <nav  class="teal ">
+      <div class="nav-wrapper">
+          <a href="/" class="brand-logo" style="padding-left: 10px;">Django App</a>
+          <!-- <a href="/" class="brand-logo"><i style="font-size: 50px;" class="large material-icons">network_check</i></a> -->
+          <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+          <ul class="right hide-on-med-and-down">
+            {% if user.is_authenticated %}
+
+              
+              <li><a href="/dashboard/user_profile/">Profile</a></li>
+              <li><a href="/account/logout/">Logout</a></li>
+              
+
+            {% else %}
+              
+            
+            <li><a href="/account/signup/">Signup</a></li>
+            <li><a href="/account/login/">Login</a></li>
+            
+            {% endif %}
+           </ul>
+      </div>
+    </nav>
+</div> 
+
+<ul class="sidenav" id="mobile-demo">
+  {% if user.is_authenticated %}
+ 
+  
+  <li class="collection-item"><a href="/calculator_page">Calculator</a></li>
+  <li class="collection-item"><a href="/history_page">History</a></li> 
+  <li class="collection-item"><a href="/profile_page">Profile</a></li> 
+ 
+
+
+ 
+
+  <li><a href="/account/logout">Logout</a></li>
+  
+
+{% else %}
+  
+
+<li><a href="/signup">Signup</a></li>
+<li><a href="/login">Login</a></li>
+
+{% endif %}
+  <!-- <li><a href="sass.html">Sass</a></li>
+  <li><a href="badges.html">Components</a></li>
+  <li><a href="collapsible.html">Javascript</a></li>
+  <li><a href="mobile.html">Mobile</a></li> -->
+</ul>
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+{% endblock 'mainbody' %}
+
+
+{% block 'js' %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    var elems = document.querySelectorAll('.sidenav');
+    var instances = M.Sidenav.init(elems, {
+      'Sidenav':true,
+      
+    });
+    })
+</script>
+{% endblock 'js' %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
