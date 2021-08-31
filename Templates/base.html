@@ -13,12 +13,20 @@
   <title>Django App</title>
   {% endif %}
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-
-
+ 
 <link rel="shortcut icon" href="{{ STATIC_URL }}/Static/images/favicon.png" type="image/x-icon">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200;0,300;0,400;1,200;1,300;1,400;1,600&display=swap" rel="stylesheet">
 <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> 
   
+
+{% if page_title == 'Create Initiative' or page_title == 'Update Initiative' %}
+  <link rel="stylesheet" href="{{ STATIC_URL }}/Static/css/mapbox-gl-geocoder.css">  
+<link rel="stylesheet" href="{{ STATIC_URL }}/Static/css/mapbox-gl.css">   
+<script src="{{ STATIC_URL }}/Static/javascript/mapbox-gl-geocoder.js"></script> 
+<script src="{{ STATIC_URL }}/Static/javascript/mapbox-gl.js"></script> 
+
+
+{% endif %}
 
 
   <style>

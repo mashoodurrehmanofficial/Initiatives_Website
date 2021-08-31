@@ -1,0 +1,74 @@
+{% extends 'base.html' %}v
+{% block 'mainbody' %}
+
+
+
+<br>
+
+<div class="container">
+  <center>
+    {% if message %}
+    <h4 class="green-text">{{message}}</h4>
+    {% endif %}
+
+    {% if error %}
+    <h4 class="red-text">{{error}}</h4>
+    {% endif %}
+
+
+  </center>
+
+  <div>
+    {% if my_initiatives %}
+    <table>
+      <thead>
+        <tr>
+          <th>Initiative Name</th>
+          <th>Date</th>
+          <th>People Enrolled</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for initiative in my_initiatives %}
+        <tr>
+          <td> <a href="/update_initiative/{{initiative.id}}">{{initiative.title}}</a></td>
+          <td>{{initiative.event_date}}</td>
+          <td>{{initiative.enrolled.count}}</td>
+        </tr>
+
+        {% endfor %}
+      </tbody>
+    </table>
+
+    {% else %}
+    <center>
+
+      <img src="https://cdn.iconscout.com/icon/free/png-256/data-not-found-1965034-1662569.png" alt="">
+
+      <h3><b>You don't have any initiatives yet</b></h3>
+
+    </center>
+
+    {% endif %}
+
+
+
+
+  </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+{% endblock 'mainbody' %}
+{% block 'js' %}
+{% endblock 'js' %}

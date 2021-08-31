@@ -5,13 +5,14 @@ from django.http.response import HttpResponse,JsonResponse
 from django.shortcuts import render,redirect
 from django.contrib.auth.hashers import make_password
 from django.db import IntegrityError
-
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login,logout
 from accounts.geodata import geodata
+from django.views.decorators.csrf import csrf_exempt
 
 import uuid
 from root.models import *
+from dateutil import parser
 
 # Create your views here.
 
@@ -69,4 +70,69 @@ def user_profile(request):
                 
     return  render(request, 'dashboards/user_profile.html',context=context)
 
+
+def create_initiative(request):
+    return render(request,'dashboards/create_initiative.html', {
+        "page_title":"Create Initiative"
+    })
+
+
+def submit_initiative(request): 
+    title       = request.GET['title'] 
+    description = request.GET['description'] 
+    place_name  = request.GET['place_name'] 
+    longitude   = request.GET['longitude'] 
+    latitude    = request.GET['latitude'] 
+    event_date  = request.GET['event_date'] 
+    try:date_object = parser.parse(event_date).date()
+    except:JsonResponse({"status":"date_error"})
+    owner       = request.user
+    Initiative_Table(
+            title       = title,
+            description = description,
+            place_name  = place_name,
+            longitude   = longitude ,
+            latitude    = latitude,
+            event_date  = event_date,
+            date_object = date_object,
+            owner       = owner
+    ).save()
+    return JsonResponse({"status":True})
+
+def my_initiatives(request):
+    initatives = Initiative_Table.objects.filter(owner=request.user).order_by('-id')
+    return render(request,'dashboards/my_initiatives.html', {
+        "page_title":"My Initiatives",
+        'my_initiatives':initatives
+    })
+
+
+
+@csrf_exempt
+def update_initiative(request,id):
+    initative = Initiative_Table.objects.get(id=id)
+    if request.method == 'POST':
+        title       = request.POST['title'] 
+        description = request.POST['description'] 
+        place_name  = request.POST['place_name'] 
+        longitude   = request.POST['longitude'] 
+        latitude    = request.POST['latitude'] 
+        event_date  = request.POST['event_date'] 
+        try:date_object = parser.parse(event_date).date()
+        except:JsonResponse({"status":"date_error"}) 
+        initative.title = title
+        initative.description = title
+        initative.place_name = place_name
+        initative.longitude = longitude
+        initative.latitude = latitude
+        initative.event_date = event_date
+        initative.date_object = date_object
+
+        initative.save()
+        return JsonResponse({"status":True})
+
+    return render(request,'dashboards/update_initiative.html', {
+        "page_title":"Update Initiative",
+        'initiative':initative
+    })
 

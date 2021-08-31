@@ -1,0 +1,161 @@
+{% extends 'base.html' %}v
+{% block 'mainbody' %}
+
+<style> 
+ 
+  .mapboxgl-ctrl-geocoder {
+    border-bottom: none!important; 
+  min-width: 100%; 
+  } 
+  .mapboxgl-ctrl-geocoder--input{
+    border-bottom: none!important;
+    box-shadow: none!important;
+  border-bottom: 0px !important;
+  margin: 0px !important;
+  padding-left: 4% !important;
+  height: 36px !important;
+  }
+  #map {width: 100%;height:600px }
+ .row .col{
+   margin: 0px !important;
+   padding:0% !important
+ }
+  </style>
+
+<div class="z-depth-2" style="margin:1% 4%;border-radius: 10px">
+  <center>
+    {% if message %}
+    <h4 class="green-text">{{message}}</h4>
+    {% endif %}
+
+    {% if error %}
+    <h4 class="red-text">{{error}}</h4>
+    {% endif %}
+
+
+  </center>
+
+<center style="padding-top: 1%;"><h4><b>Create Initiative</b></h4></center>
+ 
+<form action="" style="padding:1% 2%" id="form">
+
+
+  <div class="row">
+      <div class="input-field col s12 m8 l8">
+    <i class="material-icons prefix">title</i>
+    <input id="title" name="title" type="text" required value="{{initiative.title}}" >
+    <label for="title">Title</label>
+  </div>
+
+  <div class="input-field col s12 m4 l4">
+    <i class="material-icons prefix">event</i>
+    <input id="date" name="title" class="datepicker" type="text" required  value="{{initiative.event_date}}" >
+    <label for="date">Initiative Date</label>
+  </div> 
+  </div>
+
+
+  <div class="input-field ">
+    <i class="material-icons prefix">event_note</i>
+    <textarea id="description" name="description" class="materialize-textarea" >{{initiative.title}}</textarea>
+    <label for="description">Description</label>
+  </div>
+
+  
+
+  <div class="row">
+    <div class="input-field col s12 m5 l9">
+      <div id="geocoder" class="geocoder" style="position: inherit !important;" ></div>
+    </div>
+    <div class="input-field col s12 m4 l3"> 
+      <center>
+        <button type="submit" class="btn right" style="width: 95%;">Update Initiative</button>
+      
+      </center>
+    </div>
+  </div> 
+  <div id="map" class="z-depth-2"></div>
+
+ <input style="width:1px !important;height:1px !important" id="longitude"  value="{{initiative.longitude}}" >
+ <input style="width:1px !important;height:1px !important" id="latitude" value="{{initiative.latitude}}" >
+ <input style="width:1px !important;height:1px !important" id="place_name" value="{{initiative.place_name}}" >
+ <input style="width:1px !important;height:1px !important" id="id" value="{{initiative.id}}" >
+</form> 
+</div>
+
+
+<script>
+  $('.mapboxgl-ctrl-geocoder--input').val($('#place_name').val())
+ 
+
+$('.mapboxgl-ctrl-geocoder--input').ready(function(){
+  $('.mapboxgl-ctrl-geocoder--input').val($('#place_name').val())
+})
+
+
+
+  $('#form').submit(function (e) {
+    e.preventDefault()
+    var title = $('#title').val()
+    var id = $('#id').val()
+    var description = $('#description').val()
+    var longitude = $('#longitude').val()
+    var latitude = $('#latitude').val()
+    var place_name = $('#place_name').val() 
+    var event_date = $('#date').val() 
+    
+
+
+    $.ajax({
+      url: `/dashboard/update_initiative/${id}`,
+      data: {'event_date':event_date, 'title':title,"description":description,"place_name":place_name,'longitude':longitude,'latitude':latitude },
+      method: 'POST',
+      success: function (data) {
+        var status = data.status
+        if(status=='date_error'){
+          alert("Please use a correct date format !")
+        }else if(status==true){
+          window.location.href = '/dashboard/my_initiatives'
+        }
+      }
+    });
+  })
+
+</script>
+
+
+
+
+
+
+
+
+<script>
+
+  $('.mapboxgl-ctrl-geocoder--input').attr("placeholder", "Type your answer here");
+  mapboxgl.accessToken = 'pk.eyJ1IjoibWFzaG9vZDEyMyIsImEiOiJja3JpcTAwcXE0M3YyMzByMmxuM25yaGlkIn0.-7kWuyQlkkj0m9X-EuNnFw';
+  const map = new mapboxgl.Map({
+  container: 'map',
+  style: 'mapbox://styles/mapbox/streets-v11',
+  center: [$('#longitude').val(), $('#latitude').val()],
+  zoom: 13
+  });
+  const geocoder = new MapboxGeocoder({
+  accessToken: mapboxgl.accessToken,
+  mapboxgl: mapboxgl, 
+  });
+  document.getElementById('geocoder').appendChild(geocoder.onAdd(map));
+  geocoder.on('result', function(e) {
+    $('#longitude').val(e.result.center[0])
+    $('#latitude').val(e.result.center[1])
+    $('#place_name').val(e.result.place_name) 
+    })
+
+    const marker1 = new mapboxgl.Marker()
+    .setLngLat([$('#longitude').val(), $('#latitude').val()])
+    .addTo(map);
+  </script>
+ 
+{% endblock 'mainbody' %}
+{% block 'js' %}
+{% endblock 'js' %}
