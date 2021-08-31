@@ -65,7 +65,7 @@
 
   <div class="row">
     <div class="input-field col s12 m5 l9">
-      <div id="geocoder" class="geocoder" style="position: inherit !important;"></div>
+      <div id="geocoder" class="geocoder" style="position: inherit !important;margin-bottom: 10px !important;"></div>
     </div>
     <div class="input-field col s12 m4 l3">
 
@@ -80,6 +80,7 @@
  <input style="width:1px !important;height:1px !important" id="longitude">
  <input style="width:1px !important;height:1px !important" id="latitude">
  <input style="width:1px !important;height:1px !important" id="place_name">
+ <input style="width:1px !important;height:1px !important" id="object">
 </form> 
 </div>
 
@@ -94,11 +95,12 @@
     var latitude = $('#latitude').val()
     var place_name = $('#place_name').val() 
     var event_date = $('#date').val() 
+    var object = $('#object').val() 
 
 
     $.ajax({
       url: "/dashboard/submit_initiative/",
-      data: {'event_date':event_date, 'title':title,"description":description,"place_name":place_name,'longitude':longitude,'latitude':latitude },
+      data: {'object':object, 'event_date':event_date, 'title':title,"description":description,"place_name":place_name,'longitude':longitude,'latitude':latitude },
       method: 'GET',
       success: function (data) {
         var status = data.status
@@ -139,6 +141,7 @@
     $('#longitude').val(e.result.center[0])
     $('#latitude').val(e.result.center[1])
     $('#place_name').val(e.result.place_name) 
+    $('#object').val(JSON.stringify(e.result)) 
     })
   </script>
  

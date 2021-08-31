@@ -10,7 +10,7 @@ from django.contrib.auth import authenticate, login,logout
 from accounts.geodata import geodata
 from django.views.decorators.csrf import csrf_exempt
 
-import uuid
+import uuid,json
 from root.models import *
 from dateutil import parser
 
@@ -118,21 +118,30 @@ def update_initiative(request,id):
         longitude   = request.POST['longitude'] 
         latitude    = request.POST['latitude'] 
         event_date  = request.POST['event_date'] 
+        object      = request.POST['object'] 
         try:date_object = parser.parse(event_date).date()
         except:JsonResponse({"status":"date_error"}) 
         initative.title = title
-        initative.description = title
+        initative.description = description
         initative.place_name = place_name
         initative.longitude = longitude
         initative.latitude = latitude
         initative.event_date = event_date
         initative.date_object = date_object
-
+        object = json.loads(object)
+        # print(object['context'][-2]['text_en-US'])
         initative.save()
-        return JsonResponse({"status":True})
+        return JsonResponse({"status":False})
 
     return render(request,'dashboards/update_initiative.html', {
         "page_title":"Update Initiative",
         'initiative':initative
     })
 
+def fetch_initiatives(request):
+    initiatives = Initiative_Table.objects.all().order_by('date_object')
+    print(initiatives)
+    return render(request,'root/index.html', {
+        "page_title":"All Initiative",
+        'initiatives':initiatives
+    })

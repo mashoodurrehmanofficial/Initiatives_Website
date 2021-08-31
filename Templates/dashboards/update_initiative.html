@@ -12,13 +12,12 @@
     box-shadow: none!important;
   border-bottom: 0px !important;
   margin: 0px !important;
-  padding-left: 4% !important;
+  padding-left: 5% !important;
   height: 36px !important;
   }
   #map {width: 100%;height:600px }
  .row .col{
-   margin: 0px !important;
-   padding:0% !important
+   margin: 0px !important; 
  }
   </style>
 
@@ -64,8 +63,8 @@
   
 
   <div class="row">
-    <div class="input-field col s12 m5 l9">
-      <div id="geocoder" class="geocoder" style="position: inherit !important;" ></div>
+    <div class="input-field col s12 m5 l9" >
+      <div id="geocoder" class="geocoder" style="position: inherit !important;margin-bottom: 10px !important" ></div>
     </div>
     <div class="input-field col s12 m4 l3"> 
       <center>
@@ -80,6 +79,7 @@
  <input style="width:1px !important;height:1px !important" id="latitude" value="{{initiative.latitude}}" >
  <input style="width:1px !important;height:1px !important" id="place_name" value="{{initiative.place_name}}" >
  <input style="width:1px !important;height:1px !important" id="id" value="{{initiative.id}}" >
+ <input style="width:1px !important;height:1px !important" id="object" >
 </form> 
 </div>
 
@@ -103,12 +103,11 @@ $('.mapboxgl-ctrl-geocoder--input').ready(function(){
     var latitude = $('#latitude').val()
     var place_name = $('#place_name').val() 
     var event_date = $('#date').val() 
-    
-
+    var object = $('#object').val()   
 
     $.ajax({
       url: `/dashboard/update_initiative/${id}`,
-      data: {'event_date':event_date, 'title':title,"description":description,"place_name":place_name,'longitude':longitude,'latitude':latitude },
+      data: {'object':object, 'event_date':event_date, 'title':title,"description":description,"place_name":place_name,'longitude':longitude,'latitude':latitude },
       method: 'POST',
       success: function (data) {
         var status = data.status
@@ -145,15 +144,22 @@ $('.mapboxgl-ctrl-geocoder--input').ready(function(){
   mapboxgl: mapboxgl, 
   });
   document.getElementById('geocoder').appendChild(geocoder.onAdd(map));
+  
+  const marker1 = new mapboxgl.Marker({
+    'color':'#4668F2'
+  })
+  .setLngLat([$('#longitude').val(), $('#latitude').val()])
+  .addTo(map);
+
   geocoder.on('result', function(e) {
     $('#longitude').val(e.result.center[0])
     $('#latitude').val(e.result.center[1])
     $('#place_name').val(e.result.place_name) 
+    $('#object').val(JSON.stringify(e.result)) 
+    console.log(e.result)
+    marker1.remove()
     })
 
-    const marker1 = new mapboxgl.Marker()
-    .setLngLat([$('#longitude').val(), $('#latitude').val()])
-    .addTo(map);
   </script>
  
 {% endblock 'mainbody' %}

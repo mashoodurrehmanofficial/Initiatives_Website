@@ -20,6 +20,7 @@
   
 
 {% if page_title == 'Create Initiative' or page_title == 'Update Initiative' %}
+  <link rel="stylesheet" href="{{ STATIC_URL }}/Static/css/responsive.css">  
   <link rel="stylesheet" href="{{ STATIC_URL }}/Static/css/mapbox-gl-geocoder.css">  
 <link rel="stylesheet" href="{{ STATIC_URL }}/Static/css/mapbox-gl.css">   
 <script src="{{ STATIC_URL }}/Static/javascript/mapbox-gl-geocoder.js"></script> 
@@ -37,7 +38,9 @@
     }
  
 
- 
+    .btn {
+      text-transform: none !important;
+  }
 
 
 

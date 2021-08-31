@@ -1,0 +1,5 @@
+@media screen and (min-width: 700px) {
+    svg.mapboxgl-ctrl-geocoder--icon.mapboxgl-ctrl-geocoder--icon-search {
+        top: 6px !important
+    }
+}
