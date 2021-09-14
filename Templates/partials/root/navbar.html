@@ -34,23 +34,20 @@
 <ul class="sidenav" id="mobile-demo">
   {% if user.is_authenticated %}
  
-  
-  <li class="collection-item"><a href="/calculator_page">Calculator</a></li>
-  <li class="collection-item"><a href="/history_page">History</a></li> 
-  <li class="collection-item"><a href="/profile_page">Profile</a></li> 
+   
  
-
-
+  <li><a href="/dashboard/my_initiatives/">My Initiative</a></li>
+  <li><a href="/dashboard/create_initiative/">Create Initiative</a></li>
+  <li><a href="/dashboard/user_profile/">Profile</a></li>
+  <li><a href="/account/logout/">Logout</a></li>
  
-
-  <li><a href="/account/logout">Logout</a></li>
   
 
 {% else %}
   
 
-<li><a href="/signup">Signup</a></li>
-<li><a href="/login">Login</a></li>
+<li><a href="/account/signup/">Signup</a></li>
+<li><a href="/account/login/">Login</a></li>
 
 {% endif %}
   <!-- <li><a href="sass.html">Sass</a></li>
