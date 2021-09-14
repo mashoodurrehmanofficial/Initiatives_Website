@@ -15,10 +15,13 @@ class Profile(models.Model):
     orignal_name = models.CharField(max_length=10000,blank=True,default='')
     password = models.CharField(max_length=10000,blank=True,default='')
     country = models.CharField(max_length=10000,blank=True,default='')
+    longitude = models.CharField(max_length=10000,blank=True,default='')
+    latitude = models.CharField(max_length=10000,blank=True,default='')
     state = models.CharField(max_length=10000,blank=True,default='')
     reset_code = models.CharField(max_length=10000,blank=True,default='')
     generated_name = models.CharField(max_length=10000,blank=True,default='')
     user = models.OneToOneField(User,on_delete=models.CASCADE)
+
     def __str__(self):
         return self.generated_name
 
@@ -35,19 +38,24 @@ def delete_profile(sender, instance, *args, **kwargs):
 
  
 
-
+class Initiative_Category(models.Model):
+    category        = models.CharField(max_length=10000,blank=True,default='')
+    def __str__(self):
+        return self.category
  
 
 class Initiative_Table(models.Model):
-    title       = models.CharField(max_length=10000,blank=True,default='')
-    description = models.CharField(max_length=1000000,blank=True,default='')
-    place_name    = models.CharField(max_length=1000000,blank=True,default='')
-    longitude    = models.CharField(max_length=10000,blank=True,default='')
-    latitude    = models.CharField(max_length=10000,blank=True,default='')
-    event_date  = models.CharField(max_length=10000,blank=True,default='')
-    date_object = models.DateField(blank=True)
-    owner      = models.ForeignKey(User,on_delete=models.CASCADE,related_name="owner")
-    enrolled    = models.ManyToManyField(User, related_name="enrolled")
+    title           = models.CharField(max_length=10000,blank=True,default='')
+    description     = models.TextField(max_length=1000000,blank=True,default='')
+    place_name      = models.CharField(max_length=1000000,blank=True,default='')
+    longitude       = models.CharField(max_length=10000,blank=True,default='')
+    latitude        = models.CharField(max_length=10000,blank=True,default='')
+    event_date      = models.CharField(max_length=10000,blank=True,default='')
+    date_object     = models.DateField(blank=True)
+    category        = models.ForeignKey(Initiative_Category,on_delete=models.CASCADE,related_name="Category",default=None)
+    owner           = models.ForeignKey(User,on_delete=models.CASCADE,related_name="owner",default=None)
+    
+    enrolled        = models.ManyToManyField(User, related_name="enrolled", null=True,blank=True)
     def __str__(self):
-        return self.title
+        return str(self.title)+ ' --> ' + str(self.category.category)
 

@@ -2,3 +2,12 @@
 
 
 pk.85b99473068f04ce1a2d989001909756	
+
+
+
+
+
+pip install geopy  Nominatim
+
+pip install names
+pip install geopy

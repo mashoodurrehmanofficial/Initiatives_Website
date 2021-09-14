@@ -24,6 +24,7 @@
       <thead>
         <tr>
           <th>Initiative Name</th>
+          <th>Category</th>
           <th>Date</th>
           <th>People Enrolled</th>
         </tr>
@@ -33,6 +34,7 @@
         {% for initiative in my_initiatives %}
         <tr>
           <td> <a href="/update_initiative/{{initiative.id}}">{{initiative.title}}</a></td>
+          <td>{{initiative.category}}</td>
           <td>{{initiative.event_date}}</td>
           <td>{{initiative.enrolled.count}}</td>
         </tr>

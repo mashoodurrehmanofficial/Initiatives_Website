@@ -1,0 +1,8 @@
+:root {
+    --geocoder_input_height: 36px !important;
+  }
+
+
+  .bottom-sheet::-webkit-scrollbar {
+    display: none;
+}

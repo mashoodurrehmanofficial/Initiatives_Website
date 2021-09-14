@@ -25,6 +25,7 @@ from .EMAIL_SENDER import SEND_MESSAGE
 
 
 def signup_page(request): 
+    if request.user.is_authenticated:return redirect('Prepare_Main_page')
     countries = [x['country'] for x in geodata] 
     if request.method=='POST': 
         orignal_name = request.POST['username'] 
@@ -54,6 +55,7 @@ def signup_page(request):
 
 
 def login_page(request):
+    if request.user.is_authenticated:return redirect('Prepare_Main_page')
     if request.method=='POST':
         email = request.POST['email'] 
         password = request.POST['password']

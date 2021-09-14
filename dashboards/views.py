@@ -9,6 +9,9 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login,logout
 from accounts.geodata import geodata
 from django.views.decorators.csrf import csrf_exempt
+from root.GLOBAL_FUNCTIONS import *
+
+
 
 import uuid,json
 from root.models import *
@@ -49,11 +52,16 @@ def user_profile(request):
                 target_profile.password = password 
                 target_profile.country = country
                 target_profile.state = state
-                target_profile.save()
 
-                print(orignal_name)
-                print(target_profile.orignal_name)
-                print(target_profile)
+                coordinates = get_geo_info(country=country,city=state)
+                latitude = coordinates.latitude
+                longitude = coordinates.longitude
+                target_profile.latitude = latitude
+                target_profile.longitude = longitude
+
+
+                target_profile.save()
+ 
 
                 login(request, target_user)
                 profile = Profile.objects.filter(email=email).first()
@@ -72,8 +80,9 @@ def user_profile(request):
 
 
 def create_initiative(request):
+    categories = Initiative_Category.objects.all()
     return render(request,'dashboards/create_initiative.html', {
-        "page_title":"Create Initiative"
+        "page_title":"Create Initiative",'categories':categories
     })
 
 
@@ -81,18 +90,22 @@ def submit_initiative(request):
     title       = request.GET['title'] 
     description = request.GET['description'] 
     place_name  = request.GET['place_name'] 
-    longitude   = request.GET['longitude'] 
     latitude    = request.GET['latitude'] 
+    longitude   = request.GET['longitude'] 
+    category    = request.GET['category'] 
     event_date  = request.GET['event_date'] 
     try:date_object = parser.parse(event_date).date()
     except:JsonResponse({"status":"date_error"})
     owner       = request.user
+    print(category)
+    category    = Initiative_Category.objects.get(category=category)
     Initiative_Table(
             title       = title,
             description = description,
             place_name  = place_name,
-            longitude   = longitude ,
             latitude    = latitude,
+            longitude   = longitude ,
+            category   = category ,
             event_date  = event_date,
             date_object = date_object,
             owner       = owner
@@ -110,7 +123,9 @@ def my_initiatives(request):
 
 @csrf_exempt
 def update_initiative(request,id):
-    initative = Initiative_Table.objects.get(id=id)
+    initative = Initiative_Table.objects.get(id=id) 
+    categories = Initiative_Category.objects.all()
+    categories = [x for x in categories if x!=initative.category]
     if request.method == 'POST':
         title       = request.POST['title'] 
         description = request.POST['description'] 
@@ -118,30 +133,38 @@ def update_initiative(request,id):
         longitude   = request.POST['longitude'] 
         latitude    = request.POST['latitude'] 
         event_date  = request.POST['event_date'] 
+        category      = request.POST['category'] 
         object      = request.POST['object'] 
-        try:date_object = parser.parse(event_date).date()
-        except:JsonResponse({"status":"date_error"}) 
+        try:
+            date_object = parser.parse(event_date).date()
+        except:JsonResponse({"status":"date_error"})  
+        category = Initiative_Category.objects.get(category=category)
+ 
         initative.title = title
         initative.description = description
         initative.place_name = place_name
-        initative.longitude = longitude
         initative.latitude = latitude
+        initative.longitude = longitude
+        initative.category = category
         initative.event_date = event_date
-        initative.date_object = date_object
-        object = json.loads(object)
+        initative.date_object = date_object 
+        # object = json.loads(object)
         # print(object['context'][-2]['text_en-US'])
+        print(initative.category)
         initative.save()
-        return JsonResponse({"status":False})
-
+        return JsonResponse({"status":True})
+    
     return render(request,'dashboards/update_initiative.html', {
         "page_title":"Update Initiative",
-        'initiative':initative
+        'initiative':initative,
+        "categories":categories
     })
 
-def fetch_initiatives(request):
+def Prepare_Main_page(request):
     initiatives = Initiative_Table.objects.all().order_by('date_object')
-    print(initiatives)
+    categories = Initiative_Category.objects.all().order_by("category")
     return render(request,'root/index.html', {
         "page_title":"All Initiative",
-        'initiatives':initiatives
+        'initiatives':initiatives,
+        "categories":categories
     })

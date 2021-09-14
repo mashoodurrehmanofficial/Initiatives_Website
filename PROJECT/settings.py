@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'root', 
     'accounts',
     'dashboards',
+    'API',
     
 
     

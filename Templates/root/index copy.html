@@ -2,26 +2,6 @@
 {% block 'mainbody' %}
 
 <style>
-  /* Chrome, Safari, Edge, Opera */
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  -webkit-appearance: none !important;
-  margin: 0 !important;
-}
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button { overflow: -moz-scrollbars-none !; }
-#main_page_initiative_card_profile::-webkit-scrollbar { 
-  display: none;  /* Safari and Chrome */
-}
-#main_page_initiative_card_profile {
-  -ms-overflow-style: none;  /* Internet Explorer 10+ */
-  scrollbar-width: none;  /* Firefox */
-}
-
-/* Firefox */
-input[type=number] {
-  -moz-appearance: textfield;
-}
   .mapboxgl-ctrl-geocoder {
     border-bottom: none!important; 
   min-width: 100%; 
@@ -85,19 +65,16 @@ svg.mapboxgl-ctrl-geocoder--icon.mapboxgl-ctrl-geocoder--icon-search  {
   top: 1rem;
 }
 .main_page_left_bar_container{
-  
-  height: 85vh; 
+   
+  height: 100%; 
 }
-
-
-#initiative_card_profile_map{height: 50vh; width: 100% !important; }
 
 
 </style>
  
 
-
-   {% include 'partials/root/main_page_initiative_card_profile.html' %}
+ 
+          
 
 <!-- Messages -->
 <div class="container">
@@ -134,10 +111,10 @@ svg.mapboxgl-ctrl-geocoder--icon.mapboxgl-ctrl-geocoder--icon-search  {
        
         <!-- Range in Kilometers -->
         <div>
-          <h6><b>Radius</b></h6>
+          <h6><b>Range</b></h6>
           <div class="input-field input-outlined">
-            <input id="range_in_km" type="number"  >
-            <label for="range_in_km">Radius in Kilometers</label>
+            <input id="range_in_km" type="text" class=" ">
+            <label for="range_in_km">Range in Kilometers</label>
           </div>   
         </div>
        
@@ -158,14 +135,14 @@ svg.mapboxgl-ctrl-geocoder--icon.mapboxgl-ctrl-geocoder--icon-search  {
           <h6><b>Categories</b></h6>
           <p>
             <label>
-              <input class='main_page_category_filter' type="checkbox" value="Green Areas">
+              <input type="checkbox"/>
               <span>Green Areas</span>
             </label>
           </p>
           {% for category in categories %}
             <p>
               <label>
-                <input class='main_page_category_filter' type="checkbox" value='{{category}}'/>
+                <input type="checkbox"/>
                 <span>{{category}}</span>
               </label>
             </p>
@@ -195,10 +172,39 @@ svg.mapboxgl-ctrl-geocoder--icon.mapboxgl-ctrl-geocoder--icon-search  {
 
 
 <script>
+  
+
+  $('#form').submit(function (e) {
+    e.preventDefault()
+    var title = $('#title').val()
+    var description = $('#description').val()
+    var longitude = $('#longitude').val()
+    var latitude = $('#latitude').val()
+    var place_name = $('#place_name').val() 
+    var event_date = $('#date').val() 
+    var object = $('#object').val() 
+    var category = $('#select_category').val() 
 
 
-  
-  
+  if(place_name!='' || latitude!='',object!=''){
+    $.ajax({
+      url: "/dashboard/submit_initiative/",
+      data: {'object':object,'category':category ,'event_date':event_date, 'title':title,"description":description,"place_name":place_name,'longitude':longitude,'latitude':latitude },
+      method: 'GET',
+      success: function (data) {
+        var status = data.status
+        if(status=='date_error'){
+          alert("Please use a correct date format !")
+        }else if(status==true){
+          window.location.href = '/dashboard/my_initiatives'
+        }
+      }
+    });
+  }else{
+    alert("Please select any Location")
+  }
+  })
+
 </script>
 
 
@@ -209,27 +215,6 @@ svg.mapboxgl-ctrl-geocoder--icon.mapboxgl-ctrl-geocoder--icon-search  {
 
 
 <script>
-  class ClickableMarker extends mapboxgl.Marker {
-    // new method onClick, sets _handleClick to a function you pass in
-    onClick(handleClick) {
-      this._handleClick = handleClick;
-      return this;
-    }
-
-    // the existing _onMapClick was there to trigger a popup
-    // but we are hijacking it to run a function we define
-    _onMapClick(e) {
-      const targetElement = e.originalEvent.target;
-      const element = this._element;
-
-      if (this._handleClick && (targetElement === element || element.contains((targetElement)))) {
-        this._handleClick();
-      }
-    }
-  };
-
-
-
   $('.mapboxgl-ctrl-geocoder--input').addClass('browser-default')
   $('.mapboxgl-ctrl-geocoder--input').attr("placeholder", "Type your answer here");
   mapboxgl.accessToken = 'pk.eyJ1IjoibWFzaG9vZDEyMyIsImEiOiJja3JpcTAwcXE0M3YyMzByMmxuM25yaGlkIn0.-7kWuyQlkkj0m9X-EuNnFw';
@@ -248,41 +233,43 @@ svg.mapboxgl-ctrl-geocoder--icon.mapboxgl-ctrl-geocoder--icon-search  {
     $('#longitude').val(e.result.center[0])
     localStorage.setItem("main_page_filter_longitude",e.result.center[0]);
     localStorage.setItem("main_page_filter_latitude",e.result.center[1]);
- 
-
-    Extract_Cluster(map,ClickableMarker)
+    Extract_Cluster()
     //alert(localStorage.getItem("main_page_filter_latitude"))
     })
 
 
+   
 
-    $('#range_in_km').keyup(function(e){
-      var range_in_km = $('#range_in_km').val()
-      localStorage.setItem("main_page_filter_range_in_km",range_in_km);
-      Extract_Cluster(map,ClickableMarker)
-    })
+     
+    
+   
+    
+      
+  
+    class ClickableMarker extends mapboxgl.Marker {
+      // new method onClick, sets _handleClick to a function you pass in
+      onClick(handleClick) {
+        this._handleClick = handleClick;
+        return this;
+      }
 
-    $('#date').change(function(e){
-      var date = $('#date').val()
-      localStorage.setItem("main_page_filter_date",date);
-      Extract_Cluster(map,ClickableMarker)
-    })
-    
-    
-    
-    $('.main_page_category_filter').change(function(e){
+      // the existing _onMapClick was there to trigger a popup
+      // but we are hijacking it to run a function we define
+      _onMapClick(e) {
+        const targetElement = e.originalEvent.target;
+        const element = this._element;
+
+        if (this._handleClick && (targetElement === element || element.contains((targetElement)))) {
+          this._handleClick();
+        }
+      }
+    };
+
+
  
-      var checked_catgories = []
-      var check_boxes = $('.main_page_category_filter:checked')
-      for(var x=0;x<check_boxes.length;x++){
-        checked_catgories.push(check_boxes[x].value)
-      }  
-      localStorage.setItem("main_page_filter_checked_catgories",checked_catgories);
-      Extract_Cluster(map,ClickableMarker)
-    })
-
-
-
+  
+ 
+ 
 
 
     

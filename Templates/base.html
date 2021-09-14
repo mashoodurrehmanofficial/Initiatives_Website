@@ -2,7 +2,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-  
+  <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.1/mapbox-gl.css" rel="stylesheet" />
+  <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.1/mapbox-gl.js'></script>
+
+
+<link rel="stylesheet" href="{{ STATIC_URL }}/Static/css/general_fixing.css">  
 <link rel="stylesheet" href="{{ STATIC_URL }}/Static/css/materialize.css">  
     <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">  -->
     <script src="{{ STATIC_URL }}/Static/javascript/materialize.js"></script> 
@@ -18,23 +22,23 @@
 <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200;0,300;0,400;1,200;1,300;1,400;1,600&display=swap" rel="stylesheet">
 <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> 
   
-
-{% if page_title == 'Create Initiative' or page_title == 'Update Initiative' %}
+ 
   <link rel="stylesheet" href="{{ STATIC_URL }}/Static/css/responsive.css">  
   <link rel="stylesheet" href="{{ STATIC_URL }}/Static/css/mapbox-gl-geocoder.css">  
 <link rel="stylesheet" href="{{ STATIC_URL }}/Static/css/mapbox-gl.css">   
 <script src="{{ STATIC_URL }}/Static/javascript/mapbox-gl-geocoder.js"></script> 
 <script src="{{ STATIC_URL }}/Static/javascript/mapbox-gl.js"></script> 
-
-
-{% endif %}
+ 
 
 
   <style>
-
+    html {
+      height: 100% !important;
+    }
     body {
       font-family: 'Nunito', sans-serif;
       text-align: justify; 
+      height: 100% !important;
     }
  
 
@@ -80,63 +84,17 @@ ul.collection li {
   <!-- Dropdown Trigger -->
  
            
+  <script src="{{ STATIC_URL }}/Static/javascript/general_fixing.js"></script>   
+  <script src="{{ STATIC_URL }}/Static/javascript/component_loader.js"></script>   
 <script src="{{ STATIC_URL }}/Static/javascript/jquery.js"></script>  
+<script src="{{ STATIC_URL }}/Static/javascript/responsive.js"></script>   
 <script src="{{ STATIC_URL }}/Static/javascript/responsive.js"></script>   
 {% block 'js' %}
 {% endblock 'js' %}
 <script>
  
-
-document.addEventListener('DOMContentLoaded', function() {
-  var collapsibleElem = document.querySelector('.collapsible');
-  var collapsibleInstance = M.Collapsible.init(collapsibleElem, {Collapsible:true});
-    var elems = document.querySelectorAll('.dropdown-trigger');
-    var instances = M.Dropdown.init(elems, {
-      'Dropdown': true,
-      'coverTrigger':false
-    });
-  });
  
-
-  document.addEventListener('DOMContentLoaded', function() {
-    var elems = document.querySelectorAll('.collapsible');
-    var instances = M.Collapsible.init(elems, {
-      Collapsible:true
-    });
-  });
-
-
-  document.addEventListener('DOMContentLoaded', function() {
-    var elems = document.querySelectorAll('.sidenav');
-    var instances = M.Sidenav.init(elems, {
-      Sidenav:true
-    });
-  });
-  document.addEventListener('DOMContentLoaded', function() {
-    var elems = document.querySelectorAll('.sidenav');
-    var instances = M.Sidenav.init(elems, {
-      Sidenav:true
-    });
-  });
-
-  document.addEventListener('DOMContentLoaded', function() {
-    var elems = document.querySelectorAll('select');
-    var instances = M.FormSelect.init(elems, {
-      "FormSelect":true
-    });
-  });
-  document.addEventListener('DOMContentLoaded', function() {
-    var elems = document.querySelectorAll('.modal');
-    var instances = M.Modal.init(elems, {
-      Modal:true
-    });
-  });
-  document.addEventListener('DOMContentLoaded', function() {
-    var elems = document.querySelectorAll('.datepicker');
-    var instances = M.Datepicker.init(elems, {
-      Datepicker:true
-    });
-  });
+  
 </script>
    </body>
  </html>

@@ -2,18 +2,49 @@
 {% block 'mainbody' %}
 
 <style> 
- 
   .mapboxgl-ctrl-geocoder {
     border-bottom: none!important; 
   min-width: 100%; 
   } 
-  .mapboxgl-ctrl-geocoder--input{
-    border-bottom: none!important;
-    box-shadow: none!important;
-  border-bottom: 0px !important;
-  margin: 0px !important;
-  padding-left: 4% !important;
-  height: 36px !important;
+ 
+
+  .geocoder {
+    position: absolute;
+    z-index: 1;
+    width: 50%;
+    left: 50%;
+    margin-left: -25%;
+    top: 10px;
+    all:unset !important;
+    overflow: hidden !important;
+    height:initial !important
+}
+
+.mapboxgl-ctrl-geocoder--input{
+border-bottom: none!important;
+box-shadow: none!important;
+border-bottom: 0px !important;
+margin: 0px !important;
+margin-left: 3rem !important;
+height: 36px !important; 
+width: 80% !important;
+}
+
+
+
+#select_category{
+  height: 36px !important; 
+}
+
+
+
+
+  .mapboxgl-ctrl-geocoder--icon-search {
+     top:15% !important
+  }  
+  .mapboxgl-ctrl-geocoder--icon-close {
+     margin-top: 6% !important;
+     margin-right: 1rem !important;
   }
   #map {width: 100%;height:600px }
  .row .col{
@@ -57,23 +88,41 @@
 
   <div class="input-field ">
     <i class="material-icons prefix">event_note</i>
-    <textarea id="description" name="description" class="materialize-textarea"></textarea>
+    <textarea id="description" name="description" class="materialize-textarea" required></textarea>
     <label for="description">Description</label>
   </div>
 
   
 
   <div class="row">
-    <div class="input-field col s12 m5 l9">
+    <div class="input-field col s12 m12 l8">
       <div id="geocoder" class="geocoder" style="position: inherit !important;margin-bottom: 10px !important;"></div>
     </div>
-    <div class="input-field col s12 m4 l3">
 
+
+
+    <div class="input-field col s12 m6 l2">
       <center>
-        <button type="submit" class="btn right" style="width: 95%;">Create Initiative</button>
-      
+        <!-- <label>Select Categoty</label> -->
+        <select name="category" class="browser-default" style="width: 95%;" id="select_category" required>
+          <option value="" disabled selected>Choose Categoty</option>
+          {% for category in categories %}
+          <option value="{{category.category}}">{{category.category}}</option>
+          {% endfor %}
+        </select> 
       </center>
     </div>
+
+    <div class="input-field col s12 m6 l2">
+      <center>
+        <button type="submit" class="btn right" style="width: 95%;">Create Initiative</button>
+      </center>
+    </div>
+
+
+
+
+    
   </div> 
   <div id="map" class="z-depth-2"></div>
 
@@ -96,11 +145,13 @@
     var place_name = $('#place_name').val() 
     var event_date = $('#date').val() 
     var object = $('#object').val() 
+    var category = $('#select_category').val() 
 
 
+  if(place_name!='' || latitude!='',object!=''){
     $.ajax({
       url: "/dashboard/submit_initiative/",
-      data: {'object':object, 'event_date':event_date, 'title':title,"description":description,"place_name":place_name,'longitude':longitude,'latitude':latitude },
+      data: {'object':object,'category':category ,'event_date':event_date, 'title':title,"description":description,"place_name":place_name,'longitude':longitude,'latitude':latitude },
       method: 'GET',
       success: function (data) {
         var status = data.status
@@ -111,6 +162,9 @@
         }
       }
     });
+  }else{
+    alert("Please select any Location")
+  }
   })
 
 </script>

@@ -6,7 +6,7 @@ from django.conf.urls.static import static
 
  
 urlpatterns = [   
-    path('', fetch_initiatives, name='fetch_initiatives'),  
+    path('', Prepare_Main_page, name='Prepare_Main_page'),  
     path('user_profile/', user_profile, name='user_profile'),  
     path('create_initiative/', create_initiative, name='create_initiative'),  
     path('submit_initiative/', submit_initiative, name='submit_initiative'),  

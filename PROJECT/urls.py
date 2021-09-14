@@ -10,6 +10,7 @@ urlpatterns = [
     path('', include('dashboards.urls')),  
     path('account/', include('accounts.urls')),  
     path('dashboard/', include('dashboards.urls')),  
+    path('api/', include('API.urls')),  
     
      
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
