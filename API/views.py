@@ -41,7 +41,7 @@ def get_cluster(request):
 
     try:
         date_object = parser.parse(date).date()
-        all_data =  Initiative_Table.objects.filter(date_object__lte=date_object) 
+        all_data =  Initiative_Table.objects.filter(date_object=date_object) 
     except:
         all_data =  Initiative_Table.objects.all() 
     if checked_catgories:

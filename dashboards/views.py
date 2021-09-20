@@ -165,8 +165,13 @@ def update_initiative(request,id):
 def Prepare_Main_page(request):
     initiatives = Initiative_Table.objects.all().order_by('date_object')
     categories = Initiative_Category.objects.all().order_by("category")
+    user = request.user
+    profile = Profile.objects.filter(user=user).first()
+    print(profile.latitude)
     return render(request,'root/index.html', {
         "page_title":"All Initiative",
         'initiatives':initiatives,
-        "categories":categories
+        "categories":categories,
+        'longitude':profile.longitude,
+        'latitude':profile.latitude,
     })

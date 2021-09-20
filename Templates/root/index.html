@@ -99,6 +99,7 @@ svg.mapboxgl-ctrl-geocoder--icon.mapboxgl-ctrl-geocoder--icon-search  {
 
    {% include 'partials/root/main_page_initiative_card_profile.html' %}
 
+ 
 <!-- Messages -->
 <div class="container">
   <center>
@@ -227,8 +228,7 @@ svg.mapboxgl-ctrl-geocoder--icon.mapboxgl-ctrl-geocoder--icon-search  {
       }
     }
   };
-
-
+ 
 
   $('.mapboxgl-ctrl-geocoder--input').addClass('browser-default')
   $('.mapboxgl-ctrl-geocoder--input').attr("placeholder", "Type your answer here");
@@ -236,13 +236,23 @@ svg.mapboxgl-ctrl-geocoder--icon.mapboxgl-ctrl-geocoder--icon-search  {
   const map = new mapboxgl.Map({
   container: 'map',
   style: 'mapbox://styles/mapbox/streets-v11',
-  center: [-78.4512, 43.6568],
-  zoom: 5
+  center: [parseInt('{{longitude}}'), parseInt( '{{latitude}}')],
+  //center: [-78.4512, 43.6568],
+  zoom: 13
   });
   const geocoder = new MapboxGeocoder({
   accessToken: mapboxgl.accessToken,
   mapboxgl: mapboxgl, 
   });
+
+  const marker1 = new mapboxgl.Marker({
+    'color':'#4668F2'
+  })
+  .setLngLat([parseInt('{{longitude}}'), parseInt( '{{latitude}}')])
+  .addTo(map);
+
+
+
   document.getElementById('geocoder').appendChild(geocoder.onAdd(map));
   geocoder.on('result', function(e) {
     $('#longitude').val(e.result.center[0])
