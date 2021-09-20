@@ -228,7 +228,13 @@ svg.mapboxgl-ctrl-geocoder--icon.mapboxgl-ctrl-geocoder--icon-search  {
       }
     }
   };
- 
+ center = [-79.4512, 43.6568]
+  if(parseInt('{{longitude}}')){
+     center =  [parseInt('{{longitude}}'), parseInt( '{{latitude}}')]
+    
+  }else{
+    center =  [-79.4512, 43.6568]
+  }
 
   $('.mapboxgl-ctrl-geocoder--input').addClass('browser-default')
   $('.mapboxgl-ctrl-geocoder--input').attr("placeholder", "Type your answer here");
@@ -236,7 +242,7 @@ svg.mapboxgl-ctrl-geocoder--icon.mapboxgl-ctrl-geocoder--icon-search  {
   const map = new mapboxgl.Map({
   container: 'map',
   style: 'mapbox://styles/mapbox/streets-v11',
-  center: [parseInt('{{longitude}}'), parseInt( '{{latitude}}')],
+  center: center,
   //center: [-78.4512, 43.6568],
   zoom: 13
   });
@@ -248,7 +254,7 @@ svg.mapboxgl-ctrl-geocoder--icon.mapboxgl-ctrl-geocoder--icon-search  {
   const marker1 = new mapboxgl.Marker({
     'color':'#4668F2'
   })
-  .setLngLat([parseInt('{{longitude}}'), parseInt( '{{latitude}}')])
+  .setLngLat(center)
   .addTo(map);
 
 
