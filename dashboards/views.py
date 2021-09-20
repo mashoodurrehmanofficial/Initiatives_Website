@@ -170,7 +170,7 @@ def Prepare_Main_page(request):
         'initiatives':initiatives,
         "categories":categories,
     }
-    try:    
+    if request.user.is_authenticated:    
         user = request.user
         profile = Profile.objects.filter(user=user)
         if profile:
@@ -178,5 +178,5 @@ def Prepare_Main_page(request):
             print(profile)
             context['longitude'] =  profile.longitude
             context['latitude'] =  profile.latitude
-    except :pass
+   
     return render(request,'root/index.html', context)
