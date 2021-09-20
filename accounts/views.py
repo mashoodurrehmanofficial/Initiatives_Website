@@ -14,7 +14,7 @@ import uuid
 from root.models import *
 from .geodata import  geodata
 from .EMAIL_SENDER import SEND_MESSAGE
-
+from root.GLOBAL_FUNCTIONS import get_geo_info
 # Create your views here.
 
 
@@ -40,9 +40,15 @@ def signup_page(request):
                 return render(request, 'accounts/signup.html',{"countries":countries,"error":"Email already exists !"})
             else:
                 user = User(username=generated_name,password=make_password(password),email=email)
-                user.save()     
+                user.save()  
+
+                coordinates = get_geo_info(country=country,city=state)
+                latitude = coordinates.latitude
+                longitude = coordinates.longitude 
+
+
                 Profile(
-                    generated_name=generated_name,orignal_name=orignal_name,
+                    generated_name=generated_name,orignal_name=orignal_name,latitude = latitude,longitude=longitude,
                     email=email,password=password,user=user,country=country,state=state
                 ).save()
 
