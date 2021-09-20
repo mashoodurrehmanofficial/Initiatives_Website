@@ -44,6 +44,7 @@ def get_cluster(request):
         all_data =  Initiative_Table.objects.filter(date_object=date_object) 
     except:
         all_data =  Initiative_Table.objects.all() 
+        print(all_data.count())
     if checked_catgories:
         all_data = all_data.filter(category__category__in=checked_catgories)
     # print('----',checked_catgories)
