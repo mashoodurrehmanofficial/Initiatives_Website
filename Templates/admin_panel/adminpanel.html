@@ -1,0 +1,41 @@
+{% extends 'partials/dashboards/admin_engine.html' %}
+{% block 'engine'%}
+
+<style>
+  tbody td {
+    padding: 5px !important;
+  }
+</style>
+
+<div style="margin:5px 20px">
+   
+  <center>
+    <h1>Hello Admin</h1>
+  </center>
+
+
+ 
+
+ 
+</div> 
+
+ 
+
+<script>
+$('#add_standard_form').submit(function(e){
+  e.preventDefault()
+  var standard = $('#standard').val()
+  $.ajax({
+    url: "/dashboard/views_admin_panel_db_operations/manage_standards_add", 
+    data: {"standard":standard},
+    success: function(data){
+      location.reload()
+    }
+  }); 
+
+})
+</script>
+
+
+ 
+{% endblock 'engine' %}

@@ -10,10 +10,11 @@
           <!-- <a href="/" class="brand-logo"><i style="font-size: 50px;" class="large material-icons">network_check</i></a> -->
           <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
           <ul class="right hide-on-med-and-down">
-            {% if user.is_authenticated %}
-
+            {% if user.is_superuser %}
+            <li><a href="/admin_panel/">Admin Panel</a></li>
               
-              <li><a href="/dashboard/my_initiatives/">My Initiative</a></li>
+            {% endif %}
+            {% if user.is_authenticated %}
               <li><a href="/dashboard/create_initiative/">Create Initiative</a></li>
               <li><a href="/dashboard/user_profile/">Profile</a></li>
               <li><a href="/account/logout/">Logout</a></li>
@@ -32,6 +33,11 @@
 </div> 
 
 <ul class="sidenav" id="mobile-demo">
+  {% if user.is_superuser %}
+  <li><a href="/admin_panel/">Admin Panel</a></li>
+    
+  {% endif %}
+
   {% if user.is_authenticated %}
  
    

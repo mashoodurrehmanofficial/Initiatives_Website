@@ -50,12 +50,13 @@ class Initiative_Table(models.Model):
     place_name      = models.CharField(max_length=1000000,blank=True,default='')
     longitude       = models.CharField(max_length=10000,blank=True,default='')
     latitude        = models.CharField(max_length=10000,blank=True,default='')
-    event_date      = models.CharField(max_length=10000,blank=True,default='')
-    date_object     = models.DateField(blank=True)
+    event_date      = models.CharField(max_length=10000,blank=True,default='',null=True)
+    date_object     = models.DateField(blank=True,null=True)
     category        = models.ForeignKey(Initiative_Category,on_delete=models.CASCADE,related_name="Category",default=None)
+    is_green_area   = models.BooleanField(default=False,blank=True)
     owner           = models.ForeignKey(User,on_delete=models.CASCADE,related_name="owner",default=None)
-    
-    enrolled        = models.ManyToManyField(User, related_name="enrolled", null=True,blank=True)
+    enrolled        = models.ManyToManyField(User, related_name="enrolled",blank=True)
+
     def __str__(self):
         return str(self.title)+ ' --> ' + str(self.category.category)
 

@@ -1,0 +1,91 @@
+{% extends 'partials/dashboards/admin_engine.html' %}
+{% block 'engine'%}
+
+<style>
+  tbody td {
+    padding: 5px !important;
+  }
+</style>
+
+<div style="margin:5px 20px">
+   
+  <center>
+    <h3><b>Manage Initiatives</b></h3>
+  </center>
+
+
+
+
+  
+
+  <table class="striped">
+    <thead>
+      <tr>
+        <th>Index</th>
+        <th>Title</th>
+        <th>Mark Green</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr>
+      {% for initiative in all_initiatives %}
+      <td>{{ forloop.counter }}</td>
+      <td><a target='_blank' href="/admin_panel/manage_initiatives/update_initiative/{{initiative.id}}">{{initiative.title}}</a></td>
+      <td>
+        <div class="switch" id="{{initiative.id}}">
+          <label> 
+            {% if initiative.is_green_area %}
+              <input type="checkbox" checked>
+              
+            {% else %}
+              <input type="checkbox">
+              
+            {% endif %}
+            
+            <span class="lever"></span> 
+          </label>
+        </div>
+      </td> 
+      </tr>
+        {% endfor %}
+
+
+    </tbody>
+  </table>
+
+</div> 
+
+ 
+
+<script>
+$('.switch').change(function(e){ 
+  $.ajax({
+    url: "/admin_panel/manage_initiatives/mark_green", 
+    data: {"id":this.id},
+    success: function(data){
+      
+    }
+  }); 
+})
+
+
+
+
+$('#add_standard_form').submit(function(e){
+  e.preventDefault()
+  var standard = $('#standard').val()
+  $.ajax({
+    url: "/dashboard/views_admin_panel_db_operations/manage_standards_add", 
+    data: {"standard":standard},
+    success: function(data){
+      location.reload()
+    }
+  }); 
+
+})
+</script>
+
+
+ 
+{% endblock 'engine' %}

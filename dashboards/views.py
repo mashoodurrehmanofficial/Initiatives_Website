@@ -79,6 +79,8 @@ def user_profile(request):
     return  render(request, 'dashboards/user_profile.html',context=context)
 
 
+
+
 def create_initiative(request):
     categories = Initiative_Category.objects.all()
     return render(request,'dashboards/create_initiative.html', {

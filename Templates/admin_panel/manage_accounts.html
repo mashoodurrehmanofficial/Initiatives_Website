@@ -1,0 +1,77 @@
+{% extends 'partials/dashboards/admin_engine.html' %}
+{% block 'engine'%}
+
+<style>
+  tbody td {
+    padding: 5px !important;
+  }
+</style>
+
+<div style="margin:5px 20px">
+   
+  <center>
+    <h3><b>Manage Accounts</b></h3>
+  </center>
+
+
+
+
+  
+
+  <table class="striped">
+    <thead>
+      <tr>
+        <th>Index</th>
+        <th>Username</th>
+        <th>Email</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr>
+      {% for account in all_accounts %}
+      <td>{{ forloop.counter }}</td>
+      <td><a target='_blank' href="/admin_panel/manage_accounts/update_profile/{{account.user.id}}">{{account.orignal_name}}</a></td>
+      <td> {{account.email}} </td> 
+      </tr>
+        {% endfor %}
+
+
+    </tbody>
+  </table>
+
+</div> 
+
+ 
+
+<script>
+$('.switch').change(function(e){ 
+  $.ajax({
+    url: "/admin_panel/manage_initiatives/mark_green", 
+    data: {"id":this.id},
+    success: function(data){
+      
+    }
+  }); 
+})
+
+
+
+
+$('#add_standard_form').submit(function(e){
+  e.preventDefault()
+  var standard = $('#standard').val()
+  $.ajax({
+    url: "/dashboard/views_admin_panel_db_operations/manage_standards_add", 
+    data: {"standard":standard},
+    success: function(data){
+      location.reload()
+    }
+  }); 
+
+})
+</script>
+
+
+ 
+{% endblock 'engine' %}

@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block 'mainbody' %}
+
+<!-- RENDERER  -->
+<!-- RENDERER  -->
+<!-- RENDERER  -->
+ 
+
+  <!-- <center>
+    {% if message  %}
+    <h4 class="green-text">{{message}}</h4>
+    {% endif %}
+    
+    {% if error  %}
+    <h4 class="red-text">{{error}}</h4>
+    {% endif %}
+  </center> -->
+   
+  
+{% if request.user.is_superuser %}
+  
+
+
+
+ 
+
+<ul id="slide-out" class="sidenav sidenav-fixed" style="margin-top:64px !important;width:250px">
+  
+     <ul class="collection" style="margin: 0%;">
+        <li class="collection-item"><a href="/admin_panel/manage_green_areas/create_green_area">Create Green Areas</a></li>
+        <li class="collection-item"><a href="/admin_panel/manage_green_areas">Manage Green Areas</a></li>
+        <!-- <li class="collection-item"><a href="/admin_panel/manage_accounts">Manage Accounts</a></li> -->
+        <li class="collection-item"><a href="/admin_panel/manage_initiatives">Manage Initiatives</a></li>
+   
+        
+     
+      <!-- <li class="collection-item"><a href="#!">Mark Attendance</a></li>
+      <li class="collection-item"><a href="#!">Mark Attendance</a></li> -->
+    </ul>
+    </ul>
+    
+    <!-- SECTION - Main Section -->
+    <main> 
+        
+                <!-- Integral Article -->
+                <!-- START FROM H4  -->
+                <!-- PAGE TITLE -->
+                
+                {% block 'engine' %} 
+                {% endblock 'engine' %}
+                
+ 
+            <!-- SECTION AD DISPLAY -->  
+              
+    </main> 
+
+
+    {% else %}
+    <center><h3>Hmmm, anda tidak ada akses admin!</h3></center>
+    {% endif %}
+    
+{% endblock 'mainbody' %}
