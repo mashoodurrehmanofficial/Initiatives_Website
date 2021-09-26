@@ -174,18 +174,12 @@ $('.modal_loader_icon').click(function(e){
         virtual_tr.append(`<td> ${x+1} </td>`)
         virtual_tr.append(`<td> ${results[x].orignal_name}  </td>`)
         var virtual_td = $(`<td></td>`)
-
-
         var selection_template = $(`<select name="badge" class="browser-default" id='${virtual_td_select_id}'></select> `)
         if(results[x].badge==null){
           selection_template.append(`<option value="Select Badge" disabled selected>Select Badge</option>`)
         }
-        
         for(var y=0;y<badges.length;y++){
-          
-
           if(badges[y].badge==results[x].badge){
-            
             selection_template.append(`<option value="${badges[y].badge}" selected>${badges[y].badge}</option>`)
           }else{
             selection_template.append(`<option value="${badges[y].badge}">${badges[y].badge}</option>`)

@@ -153,9 +153,13 @@ width: 80% !important;
   var longitude = data.center[0]
   var latitude = data.center[1]
   var place_name = data.place_name
-  var city = data.context[data.context.length-3].text
-  var region = data.context[data.context.length-2].text
-  var country = data.context[data.context.length-1].text
+  //var city = data.context[data.context.length-3].text
+  //var region = data.context[data.context.length-2].text
+  // var country = data.context[data.context.length-1].text
+  var new_data  = data['place_name_en-US'].split(',')
+  var country = new_data[new_data.length-1]
+  var region = new_data[new_data.length-2]
+  var city = new_data[new_data.length-3]
 
   $('#longitude').val(longitude)
   $('#latitude').val(latitude)

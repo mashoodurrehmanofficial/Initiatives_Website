@@ -210,6 +210,8 @@ function Extract_Cluster(map,ClickableMarker){
   var range_in_km = localStorage.getItem("main_page_filter_range_in_km")
   var date = localStorage.getItem("main_page_filter_date")
   var checked_catgories = localStorage.getItem("main_page_filter_checked_catgories")
+ 
+  
   $.ajax({
     url: "/api/get_cluster/",
     data: {
@@ -221,28 +223,34 @@ function Extract_Cluster(map,ClickableMarker){
     },
     method: 'GET',
     success: function (data) { 
-      
-      var cluster = data.results 
+      var cluster = data.results   
       cluster.forEach((initative) => {
+        
         var marker = new ClickableMarker({
           'color':'#4668F2'
         })
           .setLngLat([initative.longitude,initative.latitude])
           .onClick(() => {   
-            Populate_Initiative_Profile(initative)
+          Populate_Initiative_Profile(initative)
           
-
- 
-           console.log("initative.longitude")
           })
           markers.push(marker)
+          
       }); 
         $( ".mapboxgl-marker.mapboxgl-marker-anchor-center" ).remove();
          
+
+ 
+ 
+
       for(var x=0;x<markers.length;x++){
         markers[x].addTo(map);
+
       }
       
-    }
+    } 
   });
+  localStorage.removeItem("main_page_filter_range_in_km")
+  localStorage.removeItem("main_page_filter_date")
+  localStorage.removeItem("main_page_filter_checked_catgories")
 }

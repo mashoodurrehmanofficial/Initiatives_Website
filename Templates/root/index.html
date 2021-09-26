@@ -228,10 +228,22 @@ svg.mapboxgl-ctrl-geocoder--icon.mapboxgl-ctrl-geocoder--icon-search  {
       }
     }
   };
- center = [-79.4512, 43.6568]
-  if(parseInt('{{longitude}}')){
+ 
+ 
+  center = [-79.4512, 43.6568]
+
+
+
+
+  
+  if(parseFloat('{{longitude}}')){
      center =  [parseFloat('{{longitude}}'), parseFloat( '{{latitude}}')]
-    
+     
+       $('.search_location_main_page_filter > .mapboxgl-ctrl-geocoder--input').ready(function(){
+         localStorage.setItem("main_page_filter_longitude",center[0]);
+         localStorage.setItem("main_page_filter_latitude",center[1]);
+         Extract_Cluster(map,ClickableMarker)
+        })
   }else{
     center =  [-79.4512, 43.6568]
   }
@@ -246,7 +258,7 @@ svg.mapboxgl-ctrl-geocoder--icon.mapboxgl-ctrl-geocoder--icon-search  {
   style: 'mapbox://styles/mapbox/streets-v11',
   center: center,
   //center: [-78.4512, 43.6568],
-  zoom: 13
+  zoom: 10
   });
   const geocoder = new MapboxGeocoder({
   accessToken: mapboxgl.accessToken,
@@ -266,8 +278,6 @@ svg.mapboxgl-ctrl-geocoder--icon.mapboxgl-ctrl-geocoder--icon-search  {
     $('#longitude').val(e.result.center[0])
     localStorage.setItem("main_page_filter_longitude",e.result.center[0]);
     localStorage.setItem("main_page_filter_latitude",e.result.center[1]);
- 
-
     Extract_Cluster(map,ClickableMarker)
     //alert(localStorage.getItem("main_page_filter_latitude"))
     })

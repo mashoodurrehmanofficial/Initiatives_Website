@@ -30,7 +30,7 @@ def get_cluster(request):
         checked_catgories = checked_catgories.split(',')
         
 
-    
+    print(longitude)
 
     if radius:radius = float(radius)
     else: radius     = 10
