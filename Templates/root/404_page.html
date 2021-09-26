@@ -1,0 +1,55 @@
+{% extends 'base.html' %}v
+{% block 'mainbody' %}
+
+
+
+<br>
+
+<div class="container">
+  <center>
+    {% if message  %}
+      <h4 class="green-text">{{message}}</h4>
+    {% endif %}
+  
+     {% if error  %}
+      <h4 class="red-text">{{error}}</h4>
+    {% endif %}
+  
+    
+  </center>
+  
+<div class="container">
+  <center>
+    <h1>
+      404 Page Not Found
+    </h1>
+  </center>
+</div>
+</div>
+
+
+
+
+
+<script>
+  $('#profile_form').submit(function(e){
+    var password = $('#password').val()
+    var strongRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})");
+    if(strongRegex.test(password)) { 
+    }else{
+      e.preventDefault()
+      alert("Password must contain Upper Lower case characters, Special symbols and minimum lenght should be 8 !")
+    
+    }
+  })
+   
+  </script>
+  
+
+
+ 
+
+
+{% endblock 'mainbody' %}
+{% block 'js' %}
+{% endblock 'js' %}

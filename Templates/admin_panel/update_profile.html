@@ -2,7 +2,57 @@
 {% block 'engine'%}
 
 
+<style> 
+  .mapboxgl-ctrl-geocoder {
+    border-bottom: none!important; 
+  min-width: 100%; 
+  } 
+ 
 
+  .geocoder {
+    position: absolute;
+    z-index: 1;
+    width: 50%;
+    left: 50%;
+    margin-left: -25%;
+    top: 10px;
+    all:unset !important;
+    overflow: hidden !important;
+    height:initial !important
+}
+
+.mapboxgl-ctrl-geocoder--input{
+border-bottom: none!important;
+box-shadow: none!important;
+border-bottom: 0px !important;
+margin: 0px !important;
+margin-left: 3rem !important;
+height: 36px !important; 
+width: 80% !important;
+}
+
+
+
+#select_category{
+  height: 36px !important; 
+}
+
+
+
+
+  .mapboxgl-ctrl-geocoder--icon-search {
+     top:15% !important
+  }  
+  .mapboxgl-ctrl-geocoder--icon-close {
+     margin-top: 6% !important;
+     margin-right: 1rem !important;
+  }
+  #map {width: 100%;height:600px }
+ .row .col{
+   margin: 0px !important;
+   padding:0% !important
+ }
+  </style>
 <br>
 
 <div class="container">
@@ -20,10 +70,10 @@
 
 
   <div class="container">
-    <form action="/dashboard/user_profile/" id="profile_form" method="post" id="signup_form" class='z-depth-2'
+    <form action="" id="profile_form" method="post"  class='z-depth-2'
       style="padding: 20px;border-radius: 10px;"> {% csrf_token %}
       <center>
-        <h3><b>My Profile</b></h3>
+        <h3><b>User Profile</b></h3>
       </center>
 
 
@@ -45,50 +95,24 @@
       </div>
 
 
-      <div class="row">
-        <div class="col s12 m6 l6" style="margin: 0%;padding:0%">
-          <label>Select Country</label>
-          <select name="country" class="browser-default" id="select_country">
-            {% for country in countries %}
-            {% if country == profile.country %}
-            <option value="{{country}}" selected> {{country}}</option>
-
-            {% else %}
-            <option value="{{country}}">{{country}}</option>
-
-            {% endif %}
-
-            {% endfor %}
-          </select>
-
-        </div>
-
-
-
-
-
-        <div class="statediv col s12 m6 l6" >
-          <label>Select City</label>
-          <select name="state" class="browser-default" id="select_state">
-            {% for state in cities %}
-            {% if state == profile.state %}
-            <option value="{{state}}" selected> {{state}}</option>
-
-            {% else %}
-            <option value="{{state}}">{{state}}</option>
-
-            {% endif %}
-
-            {% endfor %}
-          </select>
-          <br>
-        </div>
+      <div class="row"> 
+   
+  
+        <div id="geocoder" class="geocoder" style="position: inherit !important;margin-bottom: 10px !important;"></div>
+        <div id="map" class="z-depth-2" style="width:1px;height:1px"></div>
       </div>
-      <br>
 
 
 
-
+      <div style="visibility: hidden;">
+        <input id="longitude" name="longitude" type=''  style="width: 0.1px !important;height:0.1px !important">
+        <input id="latitude" name="latitude" type=''  style="width: 0.1px !important;height:0.1px !important">
+        <input id="place_name" name="place_name" type=''  value="{{profile.place_name}}"  style="width: 0.1px !important;height:0.1px !important">
+        <input id="city" name="city" type=''  style="width: 0.1px !important;height:0.1px !important">
+        <input id="region" name="region" type=''  style="width: 0.1px !important;height:0.1px !important">
+        <input id="country" name="country" type=''  style="width: 0.1px !important;height:0.1px !important">
+  
+       </div>
 
       <button class="btn right" style="width: 30%;">Update Profile</button>
       <br>
@@ -101,44 +125,72 @@
 
 
 
-
+<script>
+  $('.mapboxgl-ctrl-geocoder--input').ready(function(){
+    $('.mapboxgl-ctrl-geocoder--input').val($('#place_name').val())
+  })
+   
+</script>
 
 
 <script>
 $("#profile_form").submit(function(e){
-  var state =  $('#select_state').val()
-  var country =  $('#select_country').val()
-  if(state==null||country==null){
+  var location = $('.mapboxgl-ctrl-geocoder--input').val()  
+  if (/\S/.test(location)){
+    
+  }else{
     e.preventDefault()
-    alert("Select valid Country and City")
+    alert("Select valid Locationy")
   }
 })
 
 
-  $('#select_country').change(function (e) {
-    var country = $('#select_country').val()
-    $.ajax({
-      url: "/account/fetch_cities/",
-      data: { "country": country },
-      method: 'GET',
-      success: function (data) {
-        var states = data.cities.toString().split(',')
-        $('div.statediv').show();
-        $('div.select_state').show();
-        $('select#select_state').html('')
-        $('select#select_state').append(`<option value="" disabled selected>Select State</option> `)
-        for (var x = 0; x < states.length; x++) {
-          $('select#select_state').append(`
-          <option value="${states[x]}">${states[x]}</option> 
-          `)
-        }
-      }
-    });
-  })
-
+ 
 </script>
 
 
+<script>
+  $('.mapboxgl-ctrl-geocoder--input').addClass('browser-default')
+  $('.mapboxgl-ctrl-geocoder--input').attr("placeholder", "Type your answer here");
+  mapboxgl.accessToken = 'pk.eyJ1IjoibWFzaG9vZDEyMyIsImEiOiJja3JpcTAwcXE0M3YyMzByMmxuM25yaGlkIn0.-7kWuyQlkkj0m9X-EuNnFw';
+  const map = new mapboxgl.Map({
+  container: 'map',
+  style: 'mapbox://styles/mapbox/streets-v11',
+  center: [-79.4512, 43.6568],
+  zoom: 13
+  });
+  const geocoder = new MapboxGeocoder({
+  accessToken: mapboxgl.accessToken,
+  mapboxgl: mapboxgl, 
+  });
+  document.getElementById('geocoder').appendChild(geocoder.onAdd(map));
+  geocoder.on('result', function(e) {
+
+
+  var data = e.result
+  var longitude = data.center[0]
+  var latitude = data.center[1]
+  var place_name = data.place_name
+  var city = data.context[data.context.length-3].text
+  var region = data.context[data.context.length-2].text
+  var country = data.context[data.context.length-1].text
+
+  $('#longitude').val(longitude)
+  $('#latitude').val(latitude)
+  $('#place_name').val(place_name) 
+  $('#city').val(city) 
+  $('#region').val(region) 
+  $('#country').val(country) 
+
+
+
+
+
+
+
+
+    })
+  </script>
 
 
 {% endblock 'engine' %}

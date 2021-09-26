@@ -21,16 +21,18 @@ from dateutil import parser
 
 @login_required(login_url='/account/login/')
 def user_profile(request): 
-    profile = Profile.objects.filter(user=request.user).first()
-    countries = [x['country'] for x in geodata ] 
-    cities = [x['cities'] for x in geodata if x['country']==profile.country][0]
-    context = {"profile":profile,'countries':countries,'cities':cities}
+    profile = Profile.objects.filter(user=request.user).first() 
+    context = {"profile":profile}
     if request.method=='POST': 
         orignal_name = request.POST['username'] 
         email = request.POST['email'] 
         password = request.POST['password']
+        longitude = request.POST['longitude']
+        latitude = request.POST['latitude']
+        place_name = request.POST['place_name']
+        city = request.POST['city']
+        region = request.POST['region']
         country = request.POST['country']
-        state = request.POST['state']
 
         user = User.objects.filter(email=request.user.email)
         if user.exists():
@@ -50,14 +52,12 @@ def user_profile(request):
                 target_profile.generated_name = generated_name
                 target_profile.email = email
                 target_profile.password = password 
-                target_profile.country = country
-                target_profile.state = state
-
-                coordinates = get_geo_info(country=country,city=state)
-                latitude = coordinates.latitude
-                longitude = coordinates.longitude
                 target_profile.latitude = latitude
                 target_profile.longitude = longitude
+                target_profile.place_name = place_name
+                target_profile.city = city
+                target_profile.region = region
+                target_profile.country = country
 
 
                 target_profile.save()
@@ -65,10 +65,7 @@ def user_profile(request):
 
                 login(request, target_user)
                 profile = Profile.objects.filter(email=email).first()
-                countries = [x['country'] for x in geodata ] 
-                states = [x['cities'] for x in geodata if x['country']==profile.country][0]
-
-                context = {"profile":profile,'countries':countries,'cities':cities}
+                context = {"profile":profile}
                 return  render(request, 'dashboards/user_profile.html',context=context)
                 
             else: 
@@ -115,11 +112,47 @@ def submit_initiative(request):
     return JsonResponse({"status":True})
 
 def my_initiatives(request):
-    initatives = Initiative_Table.objects.filter(owner=request.user).order_by('-id')
-    return render(request,'dashboards/my_initiatives.html', {
-        "page_title":"My Initiatives",
-        'my_initiatives':initatives
+    categories = Initiative_Category.objects.all().order_by("category").exclude(category__startswith='Green Area')
+    initiatives = Initiative_Table.objects.filter(owner=request.user).order_by('-id')
+    context = {
+        "page_title":"All Initiative",
+        'my_initiatives':initiatives,
+        "categories":categories,
+        "page_title":"My Initiatives"
+    }
+    return render(request,'dashboards/my_initiatives.html', context)
+
+
+
+def initial_filter(request):
+    date        = request.GET['date'] 
+    category    = request.GET['category'] 
+    all_data = Initiative_Table.objects.filter(owner=request.user)
+    if date:
+        date_object = parser.parse(date).date()
+        all_data =  all_data.filter(date_object=date_object) 
+ 
+    if category:
+        if category=='All Initiatives':
+            pass
+        else:
+            category = Initiative_Category.objects.get(category=category)
+            all_data =  all_data.filter(category=category) 
+
+    all_data = list(all_data.values())
+
+    print("Total = ", len(all_data))
+
+    return JsonResponse({
+        "results": all_data
     })
+
+
+
+
+
+
+
 
 
 
@@ -180,3 +213,15 @@ def Prepare_Main_page(request):
             context['latitude'] =  profile.latitude
    
     return render(request,'root/index.html', context)
+
+
+
+
+
+
+
+
+def error_page(request):
+    return JsonResponse({})
+   
+    # return render(request,'root/index.html', context)

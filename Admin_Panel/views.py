@@ -205,56 +205,54 @@ def manage_accounts(request):
     })
 
 def update_profile(request,id):
-    profile = Profile.objects.filter(user=User.objects.get(id=id)).first()
-    countries = [x['country'] for x in geodata ] 
-    cities = [x['cities'] for x in geodata if x['country']==profile.country][0]
-    context = {"profile":profile,'countries':countries,'cities':cities}
+    profile = Profile.objects.filter(user=User.objects.get(id=id)).first() 
+    context = {"profile":profile}
     if request.method=='POST': 
         orignal_name = request.POST['username'] 
         email = request.POST['email'] 
         password = request.POST['password']
+        longitude = request.POST['longitude']
+        latitude = request.POST['latitude']
+        place_name = request.POST['place_name']
+        city = request.POST['city']
+        region = request.POST['region']
         country = request.POST['country']
-        state = request.POST['state']
 
-        user = User.objects.filter(email=User.objects.get(id=id).email)
+
+
+
+        user = User.objects.filter(id=id)
         if user.exists():
             user = user.first()
-            if user.id==id:  
-                print(user.id)
-                # generated_name = orignal_name+str(uuid.uuid4())
+            if user.id==int(id):  
+                generated_name = orignal_name+str(uuid.uuid4())
+                user.username = generated_name
+                user.set_password(password)
+                user.email = email
+                user.save()
+                target_user = User.objects.get(email=user.email)
+                target_profile = Profile.objects.get(user=target_user) 
+                target_profile.orignal_name = orignal_name
+                target_profile.generated_name = generated_name
+                target_profile.email = email
+                target_profile.password = password 
+                target_profile.latitude = latitude
+                target_profile.longitude = longitude
+                target_profile.place_name = place_name
+                target_profile.city = city
+                target_profile.region = region
+                target_profile.country = country
+                target_profile.save()
+                print(target_profile)
+                profile = Profile.objects.filter(email=email).first()
+                context = {"profile":profile}
+                return  render(request, 'admin_panel/update_profile.html',context=context)
                 
- 
-                # user.username = generated_name
-                # user.set_password(password)
-                # user.email = email
-                # user.save()
-
-                # target_user = User.objects.get(email=user.email)
-                # target_profile = Profile.objects.get(user=target_user) 
-                # target_profile.orignal_name = orignal_name
-                # target_profile.generated_name = generated_name
-                # target_profile.email = email
-                # target_profile.password = password 
-                # target_profile.country = country
-                # target_profile.state = state
-
-                # coordinates = get_geo_info(country=country,city=state)
-                # latitude = coordinates.latitude
-                # longitude = coordinates.longitude
-                # target_profile.latitude = latitude
-                # target_profile.longitude = longitude
-                # target_profile.save()
-            #     profile = Profile.objects.filter(email=email).first()
-            #     countries = [x['country'] for x in geodata ] 
-            #     states = [x['cities'] for x in geodata if x['country']==profile.country][0]
-
-            #     context = {"profile":profile,'countries':countries,'cities':cities}
-            #     return  render(request, 'admin_panel/update_profile.html',context=context)
-                
-            # else: 
-            #     context['error'] = "Email already exists !"
-            #     return  render(request, 'admin_panel/update_profile.html',context=context)
+            else: 
+                context['error'] = "Email already exists !"
+                return  render(request, 'admin_panel/update_profile.html',context=context)
                      
+        # return JsonResponse({})
                 
     return  render(request, 'admin_panel/update_profile.html',context=context)
 

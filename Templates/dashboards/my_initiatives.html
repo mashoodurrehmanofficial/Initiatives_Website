@@ -1,9 +1,69 @@
 {% extends 'base.html' %}v
 {% block 'mainbody' %}
 
+<style>
+  .input-field.input-outlined > input {
+    border: 2px solid #eee; 
+    padding:0px 0px 0px 1vw;
+    width: 95%;
+    float: none;
+    display: block;
+    border-radius: 4px;
+    transition: box-shadow, border-color 0.15s; 
+  }
+  .input-field.input-outlined > input:focus:not([readonly]) {
+    border-color: #26A69B;
+    box-shadow: 0 1px 0 0px #26A69B;
+  }
+  .input-field.input-outlined > label {
+    left: 0.5rem;
+    display: inline-flex;
+    width: auto !important;
+  }
+  .input-field.input-outlined > label.active {
+    background: white;
+    border-left: 4px solid white;
+    border-right: 4px solid white;
+    transform: translateY(-1.75rem);
+    top: 1rem;
+  }
+</style>
 
 
 <br>
+
+
+
+
+<div class="z-depth-2" style="border-radius: 10px;margin:0px 5%">
+  <div class="row" style="padding:10px 0px">
+
+
+    <div class="col s12 m6 l3">
+      <select name="category" class="browser-default" id="select_category" required>
+        <option value="" disabled selected>Choose Categoty</option>
+        <option value="All Initiatives">All Initiatives</option>
+        {% for category in categories %}
+        <option value="{{category.category}}">{{category.category}}</option>
+        {% endfor %}
+      </select> 
+    </div>
+
+    <div class="col s12 m6 l3">
+      <div class="input-field input-outlined" style="margin: 0%;">
+        <input id="date" type="text" class="input-outlined datepicker">
+        <label for="date">Selct Date</label>
+      </div>  
+    </div>
+
+
+
+
+  </div>
+</div>
+
+
+
 
 <div class="container">
   <center>
@@ -18,7 +78,13 @@
 
   </center>
 
-  <div>
+
+
+
+
+
+  <div> 
+  
     {% if my_initiatives %}
     <table>
       <thead>
@@ -32,7 +98,7 @@
 
       <tbody>
         {% for initiative in my_initiatives %}
-        <tr>
+        <tr id="{{initiative.id}}">
           <td> <a href="/update_initiative/{{initiative.id}}">{{initiative.title}}</a></td>
           <td>{{initiative.category}}</td>
           <td>{{initiative.event_date}}</td>
@@ -64,7 +130,38 @@
 
 
 
+<script>
 
+
+function FETCH_RESULTS(){
+  var category  = $('#select_category').val()
+  var date      = $('#date').val() 
+  $.ajax({
+    url: "/dashboard/initial_filter", 
+    data: {"date":date, 'category': category },
+    success: function(data){
+      var results = data.results
+      var trs = $('tr')
+      trs.hide()
+      for(var x=0;x<results.length;x++){
+        var tr = $(`tr#${results[x].id}`)
+        tr.show();
+      }
+      
+    }
+  }); 
+}
+
+
+  $('#select_category').change(function(e){ 
+   FETCH_RESULTS()
+  })
+  
+  $('#date').change(function(e){ 
+   FETCH_RESULTS()
+  })
+  
+</script>
 
 
 

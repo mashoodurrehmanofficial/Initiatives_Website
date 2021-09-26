@@ -31,8 +31,22 @@ def signup_page(request):
         orignal_name = request.POST['username'] 
         email = request.POST['email'] 
         password = request.POST['password']
+
+
+ 
+
+        longitude = request.POST['longitude']
+        latitude = request.POST['latitude']
+        place_name = request.POST['place_name']
+        city = request.POST['city']
+        region = request.POST['region']
+
+
         country = request.POST['country']
-        state = request.POST['state']
+        # state = request.POST['state']
+
+
+
         generated_name = orignal_name+"_"+str(uuid.uuid4())
         user = User.objects.filter(email=email)
         try:
@@ -41,15 +55,13 @@ def signup_page(request):
             else:
                 user = User(username=generated_name,password=make_password(password),email=email)
                 user.save()  
-
-                coordinates = get_geo_info(country=country,city=state)
-                latitude = coordinates.latitude
-                longitude = coordinates.longitude 
+ 
 
 
                 Profile(
-                    generated_name=generated_name,orignal_name=orignal_name,latitude = latitude,longitude=longitude,
-                    email=email,password=password,user=user,country=country,state=state
+                    generated_name=generated_name,orignal_name=orignal_name,
+                    latitude = latitude,longitude=longitude,place_name = place_name,city=city,region=region,
+                    email=email,password=password,user=user,country=country
                 ).save()
 
                 return render(request, 'accounts/login.html',{"countries":countries,'message':"Account created successfully !"})

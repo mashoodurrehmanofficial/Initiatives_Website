@@ -230,11 +230,13 @@ svg.mapboxgl-ctrl-geocoder--icon.mapboxgl-ctrl-geocoder--icon-search  {
   };
  center = [-79.4512, 43.6568]
   if(parseInt('{{longitude}}')){
-     center =  [parseInt('{{longitude}}'), parseInt( '{{latitude}}')]
+     center =  [parseFloat('{{longitude}}'), parseFloat( '{{latitude}}')]
     
   }else{
     center =  [-79.4512, 43.6568]
   }
+
+ // alert("{{longitude}}")
 
   $('.mapboxgl-ctrl-geocoder--input').addClass('browser-default')
   $('.mapboxgl-ctrl-geocoder--input').attr("placeholder", "Type your answer here");
