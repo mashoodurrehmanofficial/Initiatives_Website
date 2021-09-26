@@ -86,7 +86,7 @@ def login_page(request):
             if user is not None:
                 login(request, user)
                 print("login successful !") 
-                return redirect('my_initiatives') 
+                return redirect('Prepare_Main_page') 
             else:
                 return render(request, 'accounts/login.html',{"error":"Sorry, Email or password is incorrect !"})
         else:
