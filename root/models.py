@@ -23,7 +23,7 @@ class Profile(models.Model):
     state = models.CharField(max_length=10000,blank=True,default='')
     reset_code = models.CharField(max_length=10000,blank=True,default='')
     generated_name = models.CharField(max_length=10000,blank=True,default='')
-    user = models.OneToOneField(User,on_delete=models.CASCADE)
+    user = models.OneToOneField(User,on_delete=models.CASCADE) 
 
     def __str__(self):
         return self.generated_name
@@ -45,7 +45,18 @@ class Initiative_Category(models.Model):
     category        = models.CharField(max_length=10000,blank=True,default='')
     def __str__(self):
         return self.category
- 
+
+class Badges(models.Model):
+    badge           = models.CharField(max_length=10000,blank=True,default='') 
+    def __str__(self):
+        return str(self.badge)
+
+class Badges_Container(models.Model):
+    key           = models.CharField(max_length=10000,blank=True,default='')
+    badge = models.ForeignKey(Badges,on_delete=models.CASCADE,default=None)
+    profile = models.ForeignKey(Profile,on_delete=models.CASCADE,default=None)
+
+
 
 class Initiative_Table(models.Model):
     title           = models.CharField(max_length=10000,blank=True,default='')
@@ -59,7 +70,7 @@ class Initiative_Table(models.Model):
     is_green_area   = models.BooleanField(default=False,blank=True)
     owner           = models.ForeignKey(User,on_delete=models.CASCADE,related_name="owner",default=None)
     enrolled        = models.ManyToManyField(User, related_name="enrolled",blank=True)
+    particiapnt_badges= models.ManyToManyField(Badges_Container,default=None)
 
     def __str__(self):
         return str(self.title)+ ' --> ' + str(self.category.category)
-

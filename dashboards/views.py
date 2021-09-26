@@ -13,7 +13,7 @@ from root.GLOBAL_FUNCTIONS import *
 
 
 
-import uuid,json
+import uuid,json,ast
 from root.models import *
 from dateutil import parser
 
@@ -225,3 +225,67 @@ def error_page(request):
     return JsonResponse({})
    
     # return render(request,'root/index.html', context)
+
+
+
+
+def my_initiatives_info(request):
+    initiative_id = request.GET['id']
+    target_initiative = Initiative_Table.objects.get(id=initiative_id) 
+    participants = list(Profile.objects.filter(user__in=target_initiative.enrolled.all()).values())
+    badges = list(Badges.objects.all().order_by('badge').values()) 
+
+    participant_badge = Badges_Container.objects.filter(
+        key = initiative_id,
+        profile__in = Profile.objects.filter(email__in=[x['email'] for x in participants])
+    )
+    
+
+    for participant in participants:
+        if participant_badge:
+            temp = [x.badge.badge for x in participant_badge if x.profile.email==participant['email']]
+            if temp:
+                participant['badge'] = temp[0] 
+            else: 
+                participant['badge']=None 
+        else:
+                participant['badge']='None'
+
+
+
+    return JsonResponse({
+        "results":participants,
+        'badges':badges
+    })
+
+
+
+def set_badge_to_user(request):
+    initiative_id = request.GET['initiative_id']
+    user_id = request.GET['user_id']
+    badge = request.GET['badge']
+    badge = Badges.objects.filter(badge=badge).first()
+    target_initiative = Initiative_Table.objects.get(id=initiative_id)  
+    target_profile = Profile.objects.filter(id=user_id).first() 
+
+    record = Badges_Container.objects.filter(profile=target_profile,key=initiative_id)
+    if record.exists():
+        print("-> Changed")
+        print(record)
+        record = record.first()
+        record.badge = badge
+        record.save()
+
+    else:
+        print("-> Added")
+        record = Badges_Container(badge=badge,profile=target_profile,key=initiative_id)
+        record.save()
+        target_initiative.particiapnt_badges.add(record)
+
+
+
+
+
+    return JsonResponse({ 
+    })
+    

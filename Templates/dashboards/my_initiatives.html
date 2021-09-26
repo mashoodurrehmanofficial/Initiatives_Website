@@ -79,7 +79,30 @@
   </center>
 
 
+  <!-- Modal Trigger -->
+  <a class="waves-effect waves-light btn modal-trigger minimized_modal_loader_btn" href="#modal1">Modal</a>
 
+  <!-- Modal Structure -->
+  <div id="modal1" class="modal bottom-sheet" style="min-height:80%">
+    <div class="modal-content" >
+      <table class="striped">
+        <thead>
+          <tr>
+            <th>Index</th>
+            <th>Prticipant Name</th>
+            <th>Badge</th>
+          </tr>
+        </thead>
+    
+        <tbody class="bottom_sheet_info_body"> 
+    
+    
+        </tbody>
+      </table>
+    
+    </div> 
+  </div>
+          
 
 
 
@@ -93,6 +116,7 @@
           <th>Category</th>
           <th>Date</th>
           <th>People Enrolled</th>
+          <th>Menu</th>
         </tr>
       </thead>
 
@@ -103,6 +127,7 @@
           <td>{{initiative.category}}</td>
           <td>{{initiative.event_date}}</td>
           <td>{{initiative.enrolled.count}}</td>
+          <td> <i id="{{initiative.id}}" class="modal_loader_icon material-icons blue-text" style="cursor:pointer !important">menu</i> </td>
         </tr>
 
         {% endfor %}
@@ -111,13 +136,9 @@
 
     {% else %}
     <center>
-
       <img src="https://cdn.iconscout.com/icon/free/png-256/data-not-found-1965034-1662569.png" alt="">
-
       <h3><b>You don't have any initiatives yet</b></h3>
-
     </center>
-
     {% endif %}
 
 
@@ -131,6 +152,78 @@
 
 
 <script>
+
+
+$('.modal_loader_icon').click(function(e){ 
+  var initiative_id = this.id
+  $.ajax({
+    url: `/dashboard/my_initiatives_info`, 
+    data: {"id":initiative_id },
+    success: function(data){
+      var results = data.results 
+      var badges = data.badges     
+      $('.bottom_sheet_info_body').html("")
+
+
+
+
+      for(var x=0;x<results.length;x++){
+        var virtual_td_id = `virtual_td_id_${results[x].id}`
+        var virtual_td_select_id = `virtual_td_select_id_${results[x].id}`
+        var virtual_tr = $(`<tr></tr>`)
+        virtual_tr.append(`<td> ${x+1} </td>`)
+        virtual_tr.append(`<td> ${results[x].orignal_name}  </td>`)
+        var virtual_td = $(`<td></td>`)
+
+
+        var selection_template = $(`<select name="badge" class="browser-default" id='${virtual_td_select_id}'></select> `)
+        if(results[x].badge==null){
+          selection_template.append(`<option value="Select Badge" disabled selected>Select Badge</option>`)
+        }
+        
+        for(var y=0;y<badges.length;y++){
+          
+
+          if(badges[y].badge==results[x].badge){
+            
+            selection_template.append(`<option value="${badges[y].badge}" selected>${badges[y].badge}</option>`)
+          }else{
+            selection_template.append(`<option value="${badges[y].badge}">${badges[y].badge}</option>`)
+          }
+        }
+
+
+
+        selection_template.change(function(e){
+          SET_BADGE(initiative_id,this.id,this.value)
+        })
+        virtual_td.append(selection_template)
+        virtual_tr.append(virtual_td)
+        $('.bottom_sheet_info_body').append(virtual_tr)
+      }
+
+      $('.minimized_modal_loader_btn')[0].click()
+
+      
+    }
+  }); 
+})
+
+
+
+function SET_BADGE(initiative_id,user_id,badge){
+  user_id = user_id.toString().split('_')
+  user_id = user_id[user_id.length-1]
+  $.ajax({
+    url: "/dashboard/set_badge_to_user", 
+    data: {"initiative_id":initiative_id, 'user_id': user_id, 'badge':badge },
+    success: function(data){
+      var results = data.results
+      
+    }
+  }); 
+}
+
 
 
 function FETCH_RESULTS(){

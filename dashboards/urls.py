@@ -13,6 +13,8 @@ urlpatterns = [
     path('my_initiatives/', my_initiatives, name='my_initiatives'),  
     path('update_initiative/<str:id>', update_initiative, name='update_initiative'),  
     path('initial_filter/', initial_filter, name='initial_filter'),  
+    path('my_initiatives_info/', my_initiatives_info, name='my_initiatives_info'),  
+    path('set_badge_to_user/', set_badge_to_user, name='set_badge_to_user'),  
      
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
